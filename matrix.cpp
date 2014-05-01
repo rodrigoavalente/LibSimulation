@@ -25,11 +25,11 @@ Matrix::Matrix(const Matrix & otherMatrix)
 
 Matrix::~Matrix()
 {
-    for (int i = 0; i < this->rows; i++)
+    /*for (int i = 0; i < this->rows; i++)
     {
         free(this->Mat[i]);
         this->Mat[i] = NULL;
-    }
+    }*/
     free(this->Mat);
     this->rows = 0;
     this->cols = 0;
@@ -38,9 +38,9 @@ Matrix::~Matrix()
 
 void Matrix::init(int row, int col)//Aloca o espaço de memória para a Matriz
 {
-    this->Mat = (float**)malloc((row)*sizeof(float*)); //Cria as linhas
+    this->Mat = (float**)calloc(col,(row)*sizeof(float*)); //Cria as linhas
     for (int i = 0; i < row; i++)
-        this->Mat[i] = (float*)malloc((col)*sizeof(float)); //Cria as colunas
+        this->Mat[i] = (float*)calloc(row,(col)*sizeof(float)); //Cria as colunas
     this->rows = row;
     this->cols = col;
 
@@ -98,21 +98,33 @@ Matrix Matrix::operator *(Matrix Mat1)
 {
 
     float temp = 0;
-    Matrix Ret(this->rows, this->cols);
+    Matrix Ret(this->rows, Mat1.cols);
 
-    for(int i = 0; i < this->rows; i++)
+    try
     {
-        for (int col = 0; col < this->cols; col++)
+        if (this->cols != Mat1.rows)
+            throw "As dimensoes das matrizes nao batem, a multiplicacao nao e possivel";
+        else
         {
-            temp = 0;
-            for (int j = 0; j < this->cols; j++)
-                  temp += this->Mat[i][j]*Mat1.Mat[j][col];
-            Ret.Mat[i][col] = temp;
-        }
+            for(int i = 0; i < this->rows; i++)
+            {
+                for (int col = 0; col < this->cols; col++)
+                {
+                    temp = 0;
+                    for (int j = 0; j < this->cols; j++)
+                        temp += this->Mat[i][j]*Mat1.Mat[j][col];
+                    Ret.Mat[i][col] = temp;
+                }
 
-
+            }
+            return Ret;
+       }
     }
-    return Ret;
+    catch(const char* msg)
+    {
+        cerr<<endl<<msg<<endl;
+    }
+
 }
 
 Matrix Matrix::operator *(float a)
