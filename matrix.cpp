@@ -2,7 +2,7 @@
 #include <cstdlib>
 #include <iostream>
 
-using namespace std;
+
 
 Matrix::Matrix() //Inicializa linhas e colunas com zero
 {
@@ -15,6 +15,7 @@ Matrix::Matrix(int row, int col)
     this->init(row, col);
 }
 
+
 Matrix::Matrix(const Matrix & otherMatrix)
 {
     this->init(otherMatrix.rows, otherMatrix.cols);
@@ -25,11 +26,11 @@ Matrix::Matrix(const Matrix & otherMatrix)
 
 Matrix::~Matrix()
 {
-    /*for (int i = 0; i < this->rows; i++)
+    for (int i = 0; i < this->rows; i++)
     {
         free(this->Mat[i]);
         this->Mat[i] = NULL;
-    }*/
+    }
     free(this->Mat);
     this->rows = 0;
     this->cols = 0;
@@ -46,10 +47,76 @@ void Matrix::init(int row, int col)//Aloca o espaço de memória para a Matriz
 
 }
 
+void Matrix::init(string value)
+{
+    int posComma, posSemiComma, col = 1, row = 1;
+    string temp;
+
+    while (value.length() -1 != 0)
+    {
+        posComma = value.find(",");
+        posSemiComma = value.find(";");
+
+        if ((posComma == -1) && (posSemiComma == -1))
+            break;
+
+        if(posSemiComma == -1)
+            posSemiComma = posComma+1;
+
+        if(posComma == -1)
+            posComma = posSemiComma+1;
+
+        if (posComma < posSemiComma)
+        {
+            temp = value.substr(0, posComma);
+            float num = atof(temp.c_str());
+            this->add(row, col, num);
+            value.erase(0, posComma+1);
+            col++;
+        }
+        else if (posComma > posSemiComma)
+        {
+
+            temp = value.substr(0,posSemiComma);
+            float num = atof(temp.c_str());
+            this->add(row, col, num);
+            value.erase(0, posSemiComma+1);
+            col = 1;
+            row++;
+        }
+
+        this->print();
+    }
+}
+
 void Matrix::add(int row, int col, float number)
 {
-    //Matrix Temp(row, col);
-    this->Mat[row-1][col-1] = number;
+    int tempRow, tempCol;
+
+    if(this->rows < row)
+        tempRow = row;
+    else
+        tempRow = this->rows;
+    if(this->cols < col)
+        tempCol = col;
+    else
+        tempCol = this->cols;
+
+    Matrix Temp(tempRow, tempCol);
+    if((this->rows != 0) && (this->cols != 0))
+    {
+        for(int i = 0; i < this->rows; i++)
+            for (int j = 0; j < this->cols; j++)
+                Temp.Mat[i][j] = this->Mat[i][j];
+    }
+
+    Temp.Mat[row-1][col-1] = number;
+    this->init(tempRow, tempCol);
+
+    for(int i = 0; i < Temp.rows; i++)
+        for (int j = 0; j < Temp.cols; j++)
+            this->Mat[i][j] = Temp.Mat[i][j];
+
 }
 
 void Matrix::print()
@@ -74,6 +141,22 @@ Matrix Matrix::operator +(Matrix Mat1)
     return Ret;
 }
 
+Matrix Matrix::operator +(float a)
+{
+    Matrix Ret(this->rows, this->cols);
+
+    for(int i = 0; i < this->rows; i++)
+        for (int j = 0; j < this->cols; j++)
+            Ret.Mat[i][j] = this->Mat[i][j] + a;
+
+    return Ret;
+}
+
+Matrix operator+(float a, Matrix Mat1)
+{
+    return Mat1+a;
+}
+
 Matrix Matrix::operator -(Matrix Mat1)
 {
     Matrix Ret(this->rows, this->cols);
@@ -85,6 +168,22 @@ Matrix Matrix::operator -(Matrix Mat1)
     return Ret;
 }
 
+Matrix Matrix::operator -(float a)
+{
+    Matrix Ret(this->rows, this->cols);
+
+    for(int i = 0; i < this->rows; i++)
+        for (int j = 0; j < this->cols; j++)
+            Ret.Mat[i][j] = this->Mat[i][j] - a;
+
+    return Ret;
+}
+
+Matrix operator-(float a, Matrix Mat1)
+{
+    return Mat1-a;
+}
+
 void Matrix::operator =(Matrix Mat1)
 {
    this->init(Mat1.rows, Mat1.cols);
@@ -92,6 +191,11 @@ void Matrix::operator =(Matrix Mat1)
    for(int i = 0; i < this->rows; i++)
        for (int j = 0; j < this->cols; j++)
            this->Mat[i][j] = Mat1.Mat[i][j];
+}
+
+void Matrix::operator=(string value)
+{
+    this->init(value);
 }
 
 Matrix Matrix::operator *(Matrix Mat1)
@@ -124,7 +228,7 @@ Matrix Matrix::operator *(Matrix Mat1)
     {
         cerr<<endl<<msg<<endl;
     }
-
+    return Ret;
 }
 
 Matrix Matrix::operator *(float a)
