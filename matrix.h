@@ -23,6 +23,7 @@ public:
     void print();
     void eye(int num);
     void trans();
+    void zeros(int row, int col);
 
     //#######Criação do Operador de Soma#########//
     Matrix operator+(Matrix Mat1);//Soma Matriz Matriz
@@ -53,7 +54,7 @@ public:
     //#############################//
 
     //Separação de Cholesky//
-    void cholesky ();
+    Matrix cholesky(Matrix Mat1);
     //Matrix choleskytrans ();
 };
 
