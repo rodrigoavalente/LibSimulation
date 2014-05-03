@@ -128,6 +128,11 @@ void Matrix::trans()//Faz a transporta da Matriz
             this->Mat[i][j] = temp.Mat[j][i];
 }
 
+void Matrix::zeros(int row, int col)
+{
+    this->init(row, col);
+}
+
 void Matrix::print()//Imprime a Matriz na Tela
 {
     cout<<"\n";
@@ -216,7 +221,10 @@ Matrix Matrix::operator *(Matrix Mat1)//Operador de Multiplicação Matriz Matri
     try
     {
         if (this->cols != Mat1.rows)
+        {
             throw "As dimensoes das matrizes nao batem, a multiplicacao nao e possivel";
+            Ret.zeros(this->rows, Mat1.cols);
+        }
         else
         {
             for(int i = 0; i < this->rows; i++)
@@ -286,7 +294,7 @@ Matrix Matrix::operator||(Matrix Mat1)//Concatenação de Matrizes Abaixo
 
 }
 
-void Matrix::cholesky()
+Matrix Matrix::cholesky(Matrix Mat1)
 {
     Matrix Ret(this->rows, this->cols), L(this->rows, this->cols);
     float temp;
