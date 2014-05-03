@@ -2,6 +2,7 @@
 #define MATRIX_H
 #include <string>
 #include <sstream>
+#include <math.h>
 
 using namespace std;
 
@@ -20,22 +21,42 @@ public:
     void init(string value);
     void add(int rol, int col, float number);
     void print();
+    void eye(int num);
+    void trans();
 
+    //#######Criação do Operador de Soma#########//
+    Matrix operator+(Matrix Mat1);//Soma Matriz Matriz
+    Matrix operator+(float a);//Soma Escalar Matriz
+    friend Matrix operator+(float a, Matrix Mat1);//Soma Matriz Escalar
+    //##########################################//
 
-    Matrix operator+(Matrix Mat1);
-    Matrix operator+(float a);
-    friend Matrix operator+(float a, Matrix Mat1);
+    //#####Criação do Operador de Subtração#####//
+    Matrix operator-(Matrix Mat1);//Subtração Matriz Matriz
+    Matrix operator-(float a);//Subtração Escalar Matriz
+    friend Matrix operator-(float a, Matrix Mat1);//Subtração Matriz Escalar
+    //##########################################//
 
-    Matrix operator-(Matrix Mat1);
-    Matrix operator-(float a);
-    friend Matrix operator-(float a, Matrix Mat1);
+    //#####Criação do Operador de Atribuição#####//
+    void operator=(Matrix Mat1);//Igualando Matriz Matriz
+    void operator=(string value);//Atribuindo String a Entrada da Matriz
+    //#########################//
 
-    void operator=(Matrix Mat1);
-    void operator=(string value);
+    //#####Criação do Operador de Multiplicação####//
+    Matrix operator*(Matrix Mat1);//Multiplicação Matriz Matriz
+    Matrix operator*(float a);//Multiplicação Escalar Matriz
+    friend Matrix operator*(float a, Matrix Mat1);//Multiplicação Matriz Escalar
+    //##########################################//
 
-    Matrix operator*(Matrix Mat1);
-    Matrix operator*(float a);
-    friend Matrix operator*(float a, Matrix Mat1);
+    //#####Criação Operadores de Concatenação Matrizes#####//
+    Matrix operator| (Matrix Mat1);//Concatena Matrizes a Esquerda
+    Matrix operator|| (Matrix Mat1);//Concatena Matrizes Abaixo
+    //#############################//
+
+    //Separação de Cholesky//
+    void cholesky ();
+    //Matrix choleskytrans ();
 };
+
+
 
 #endif // MATRIX_H
