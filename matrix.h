@@ -22,7 +22,7 @@ public:
     void add(int rol, int col, float number);
     void print();
     void eye(int num);
-    void trans();
+
     void zeros(int row, int col);
 
     //#######Criação do Operador de Soma#########//
@@ -53,9 +53,21 @@ public:
     Matrix operator|| (Matrix Mat1);//Concatena Matrizes Abaixo
     //#############################//
 
+    //#####Criação do Operador de Matriz Transposta#####//
+    Matrix operator~();
+    //##################################################//
+
+    //#####Criação do Operador de Potência de Matrizes#####//
+    Matrix operator^(float exp);
+    //####################################################//
+
     //Separação de Cholesky//
-    Matrix cholesky(Matrix Mat1);
+    void cholesky();
     //Matrix choleskytrans ();
+
+    //#####Inversa de uma Matriz#####//
+    Matrix inv();
+    //##############################//
 };
 
 

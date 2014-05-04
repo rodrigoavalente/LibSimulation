@@ -120,14 +120,6 @@ void Matrix::eye(int num)//Gera uma Matriz Identidade, entrando como parâmetro 
 
 }
 
-void Matrix::trans()//Faz a transporta da Matriz
-{
-    Matrix temp = *this;
-    for(int i = 0; i < this->rows; i++)
-        for (int j = 0; j < this->cols; j++)
-            this->Mat[i][j] = temp.Mat[j][i];
-}
-
 void Matrix::zeros(int row, int col)
 {
     this->init(row, col);
@@ -294,9 +286,45 @@ Matrix Matrix::operator||(Matrix Mat1)//Concatenação de Matrizes Abaixo
 
 }
 
-Matrix Matrix::cholesky(Matrix Mat1)
+Matrix Matrix::operator~()//Faz a transporta da Matriz
 {
-    Matrix Ret(this->rows, this->cols), L(this->rows, this->cols);
+    Matrix temp = *this, Ret (this->rows, this->cols);
+    for(int i = 0; i < this->rows; i++)
+        for (int j = 0; j < this->cols; j++)
+                Ret.Mat[i][j] = temp.Mat[j][i];
+
+    return Ret;
+}
+
+Matrix Matrix::operator^(float exp)
+{
+    Matrix Ret, temp = *this;
+    int sinal;
+
+    if(exp < 0)
+    {   sinal = -1;
+        exp = exp*(-1);
+    }
+    else
+        sinal = 1;
+
+    Ret.eye(this->rows);
+
+    for(float i = 0; i < exp; i++)
+    {
+        if(sinal > 0)
+            Ret = Ret*temp;
+        else
+            Ret = temp.inv()*Ret;
+    }
+
+    return Ret;
+}
+
+
+void Matrix::cholesky()
+{
+    Matrix L(this->rows, this->cols);
     float temp;
 
 
@@ -312,7 +340,7 @@ Matrix Matrix::cholesky(Matrix Mat1)
                     temp+=((L.Mat[j][k])*(L.Mat[j][k]));
                 }
 
-               L.Mat[i][j]=sqrt((double)(Mat1.Mat[i][j]-temp));
+               L.Mat[i][j]=sqrt((double)(this->Mat[i][j]-temp));
             }
 
             if(i > j)
@@ -321,7 +349,7 @@ Matrix Matrix::cholesky(Matrix Mat1)
                     {
                         temp+=((L.Mat[i][k]*L.Mat[j][k]));
                     }
-                L.Mat[i][j]=(1/(L.Mat[j][j]))*((Mat1.Mat[i][j])-temp);
+                L.Mat[i][j]=(1/(L.Mat[j][j]))*((this->Mat[i][j])-temp);
             }
 
             if(i < j)
@@ -330,5 +358,49 @@ Matrix Matrix::cholesky(Matrix Mat1)
             }
         }
    }
-   return L;
+   L.print();
+   (~L).print();
+   (L*(~L)).print();
+ }
+
+Matrix Matrix::inv()
+{
+    Matrix Ret =*this, Id;
+    Id.eye(this->rows);
+
+    for(int i = 0; i < this->rows; i++ )
+        for(int j = i+1; j<this->rows; j++)
+        {
+            float m = Ret.Mat[j][i]/Ret.Mat[i][i];
+            for(int k = 0; k <this->cols; k++)
+            {
+                Ret.Mat[j][k] = Ret.Mat[j][k]-m*Ret.Mat[i][k];
+                Id.Mat[j][k] = Id.Mat[j][k]-m*Id.Mat[i][k];
+            }
+        }
+
+
+    for(int i = this->rows-1; i >=0 ; i-- )
+        for(int j = i-1; j>=0; j--)
+        {
+            float m = Ret.Mat[j][i]/Ret.Mat[i][i];
+            for(int k = 0; k <this->cols; k++)
+            {
+                Ret.Mat[j][k] = Ret.Mat[j][k]-m*Ret.Mat[i][k];
+                Id.Mat[j][k] = Id.Mat[j][k]-m*Id.Mat[i][k];
+            }
+        }
+
+    for(int i=0; i< this->rows; i++)
+    {
+        float m = 1/Ret.Mat[i][i];
+        for(int j=0; j<this->rows; j++)
+        {
+             Ret.Mat[i][j] = m*Ret.Mat[i][j];
+             Id.Mat[i][j] = m*Id.Mat[i][j];
+        }
+
+    }
+
+    return Id;
 }
