@@ -11,6 +11,11 @@ class Matrix
 private:
     int rows, cols;
     float **Mat;
+
+    //#####Verificação de Matriz Quadrada#####//
+    bool sqr(Matrix Mat1);
+    //#######################################//
+
 public:
     Matrix(); //Construtor
     Matrix(int row, int col);
@@ -68,6 +73,14 @@ public:
     //#####Inversa de uma Matriz#####//
     Matrix inv();
     //##############################//
+
+    //#####Cálculo do Traço#####//
+    float trace();
+    //#########################//
+
+    //#####Encontrando o Polinômio Característico de uma Matriz#####//
+    void pol();
+    //#############################################################//
 };
 
 
