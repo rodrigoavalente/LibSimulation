@@ -15,6 +15,18 @@ Matrix::Matrix(int row, int col)//Inicializa a Matriz com as linhas e colunas de
     this->init(row, col);
 }
 
+bool Matrix::sqr(Matrix Mat1)
+{
+    bool vef;
+
+    if (Mat1.rows == Mat1.cols)
+        vef = true;
+    else
+        vef = false;
+
+    return vef;
+}
+
 
 Matrix::Matrix(const Matrix & otherMatrix)//Cria uma cópia da Matriz
 {
@@ -403,4 +415,95 @@ Matrix Matrix::inv()
     }
 
     return Id;
+}
+
+float Matrix::trace()
+{
+   float traco = 0;
+
+   try
+   {
+        if(this->rows != this->cols)
+            throw "A matrix nao e quadrada";
+        else
+            for(int i = 0; i < this->rows; i++ )
+                for(int j = 0; j < this->cols; j++)
+                    if( i == j)
+                        traco = traco + this->Mat[i][j];
+   }
+   catch (const char* msg)
+   {
+        cerr<<msg<<endl;
+   }
+
+    return traco;
+}
+
+void Matrix::pol()
+{
+    float *q;
+    Matrix A = *this, B, I, C, D;
+    int sinal, j = 0;
+
+    try
+    {
+         if(this->rows != this->cols)
+             throw "A matrix nao e quadrada";
+         else
+             I.eye(this->rows);
+             q = (float*)calloc(this->rows,(this->rows)*sizeof(float));
+             C = A;
+             sinal = pow(-1, this->rows);
+             for(int i = 0; i < this->rows; i++ )
+             {
+                    q[i] = C.trace()/(i+1);
+                    D = q[i]*I;
+                    B = C - D;
+                    C = A*B;
+             }
+             for(int i = 0; i < this->rows; i++)
+             {
+                 q[i] = sinal*q[i];
+                 cout<<q[i]<<endl;
+             }
+             for (int i = this->rows; i > 0; i--)
+             {
+
+                 if(i == this->rows)
+                     cout<<q[i]<<"x^"<<(this->rows -j)<<" ";
+                 else if(q[i] > 0)
+                        cout<<"+"<<q[i]<<"x^"<<(this->rows - j)<<" ";
+                      else
+                        cout<<q[i]<<"x^"<<(this->rows - j)<<" ";
+                 if (i == 0)
+                     cout<<q[i]<<" ";
+                 j++;
+
+             }
+//                for (int j = 0; j < this->rows; j++)
+//                {
+//                        if(j == 0)
+//                        {
+//                            cout<<"x^"<<this->rows<<" ";
+//                            break;
+//                        }
+//                        else if (i == 0)
+//                             {
+//                                cout<<q[j]<<" ";
+//                                break;
+//                             }
+//                             else
+//                                {
+//                                    cout<<q[j]<<"x^"<<i<<" ";
+//                                    break;
+//                                }
+
+//                }
+
+    }
+    catch (const char* msg)
+    {
+         cerr<<msg<<endl;
+    }
+
 }
