@@ -454,35 +454,36 @@ void Matrix::pol()
              q = (float*)calloc(this->rows,(this->rows)*sizeof(float));
              C = A;
              sinal = pow(-1, this->rows);
-             for(int i = 1; i <= this->rows; i++ )
+             for(int i = 0; i < this->rows; i++ )
              {
-                    q[i] = C.trace()/(i);
+                    q[i] = C.trace()/(i+1);
                     B = C - q[i]*I;
                     C = A*B;
+                    cout<<q[i]<<endl;
              }
              if (sinal < 0)
                 cout<<"-x^"<<(this->rows)<<" ";
              else
                  cout<<"x^"<<(this->rows)<<" ";
-             for(int i = 1; i <= this->rows; i++)
+             for(int i = 0; i < this->rows; i++)
              {
                  q[i] = sinal*(-q[i]);
 //                 cout<<q[i]<<endl;
-                 if (i == this->rows)
+                 if ((i + 1) == this->rows)
                     cout<<q[i]<<" ";
                  else if (q[i] > 0)
                             {
                                 if (q[i] == 1)
-                                    cout<<"+x^"<<(this->rows - i)<<" ";
+                                    cout<<"+x^"<<(this->rows - i - 1)<<" ";
                                 else
-                                    cout<<"+"<<q[i]<<"x^"<<(this->rows - i)<<" ";
+                                    cout<<"+"<<q[i]<<"x^"<<(this->rows - i - 1)<<" ";
                             }
                       else
                             {
                                 if (q[i] == -1)
-                                    cout<<"-x^"<<(this->rows - i)<<" ";
+                                    cout<<"-x^"<<(this->rows - i - 1)<<" ";
                                 else
-                                    cout<<q[i]<<"x^"<<(this->rows - i)<<" ";
+                                    cout<<q[i]<<"x^"<<(this->rows - i - 1)<<" ";
                             }
 
 
