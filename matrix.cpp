@@ -459,7 +459,7 @@ void Matrix::pol()
                     q[i] = C.trace()/(i+1);
                     B = C - q[i]*I;
                     C = A*B;
-                    cout<<q[i]<<endl;
+
              }
              if (sinal < 0)
                 cout<<"-x^"<<(this->rows)<<" ";
@@ -468,7 +468,7 @@ void Matrix::pol()
              for(int i = 0; i < this->rows; i++)
              {
                  q[i] = sinal*(-q[i]);
-//                 cout<<q[i]<<endl;
+
                  if ((i + 1) == this->rows)
                     cout<<q[i]<<" ";
                  else if (q[i] > 0)
