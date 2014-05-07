@@ -311,23 +311,21 @@ Matrix Matrix::operator~()//Faz a transporta da Matriz
 Matrix Matrix::operator^(float exp)
 {
     Matrix Ret, temp = *this;
-    int sinal;
+
+    Ret.eye(this->rows);
 
     if(exp < 0)
-    {   sinal = -1;
+    {
+        temp = this->inv();
         exp = exp*(-1);
     }
-    else
-        sinal = 1;
+
 
     Ret.eye(this->rows);
 
     for(float i = 0; i < exp; i++)
     {
-        if(sinal > 0)
             Ret = Ret*temp;
-        else
-            Ret = temp.inv()*Ret;
     }
 
     return Ret;
