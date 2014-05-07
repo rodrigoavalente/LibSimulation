@@ -224,7 +224,7 @@ Matrix Matrix::operator *(Matrix Mat1)//Operador de Multiplicação Matriz Matri
 
     try
     {
-        if (this->cols != Mat1.rows)
+        if (!this->sqr(*this))
         {
             throw "As dimensoes das matrizes nao batem, a multiplicacao nao e possivel";
             Ret.zeros(this->rows, Mat1.cols);
@@ -423,7 +423,7 @@ float Matrix::trace()
 
    try
    {
-        if(this->rows != this->cols)
+        if(!this->sqr(*this))
             throw "A matrix nao e quadrada";
         else
             for(int i = 0; i < this->rows; i++ )
@@ -442,64 +442,51 @@ float Matrix::trace()
 void Matrix::pol()
 {
     float *q;
-    Matrix A = *this, B, I, C, D;
-    int sinal, j = 0;
+    Matrix A = *this, B, I, C;
+    int sinal;
 
     try
     {
-         if(this->rows != this->cols)
+         if(!this->sqr(*this))
              throw "A matrix nao e quadrada";
          else
              I.eye(this->rows);
              q = (float*)calloc(this->rows,(this->rows)*sizeof(float));
              C = A;
              sinal = pow(-1, this->rows);
-             for(int i = 0; i < this->rows; i++ )
+             for(int i = 1; i <= this->rows; i++ )
              {
-                    q[i] = C.trace()/(i+1);
-                    D = q[i]*I;
-                    B = C - D;
+                    q[i] = C.trace()/(i);
+                    B = C - q[i]*I;
                     C = A*B;
              }
-             for(int i = 0; i < this->rows; i++)
+             if (sinal < 0)
+                cout<<"-x^"<<(this->rows)<<" ";
+             else
+                 cout<<"x^"<<(this->rows)<<" ";
+             for(int i = 1; i <= this->rows; i++)
              {
-                 q[i] = sinal*q[i];
-                 cout<<q[i]<<endl;
-             }
-             for (int i = this->rows; i > 0; i--)
-             {
-
-                 if(i == this->rows)
-                     cout<<q[i]<<"x^"<<(this->rows -j)<<" ";
-                 else if(q[i] > 0)
-                        cout<<"+"<<q[i]<<"x^"<<(this->rows - j)<<" ";
+                 q[i] = sinal*(-q[i]);
+//                 cout<<q[i]<<endl;
+                 if (i == this->rows)
+                    cout<<q[i]<<" ";
+                 else if (q[i] > 0)
+                            {
+                                if (q[i] == 1)
+                                    cout<<"+x^"<<(this->rows - i)<<" ";
+                                else
+                                    cout<<"+"<<q[i]<<"x^"<<(this->rows - i)<<" ";
+                            }
                       else
-                        cout<<q[i]<<"x^"<<(this->rows - j)<<" ";
-                 if (i == 0)
-                     cout<<q[i]<<" ";
-                 j++;
+                            {
+                                if (q[i] == -1)
+                                    cout<<"-x^"<<(this->rows - i)<<" ";
+                                else
+                                    cout<<q[i]<<"x^"<<(this->rows - i)<<" ";
+                            }
+
 
              }
-//                for (int j = 0; j < this->rows; j++)
-//                {
-//                        if(j == 0)
-//                        {
-//                            cout<<"x^"<<this->rows<<" ";
-//                            break;
-//                        }
-//                        else if (i == 0)
-//                             {
-//                                cout<<q[j]<<" ";
-//                                break;
-//                             }
-//                             else
-//                                {
-//                                    cout<<q[j]<<"x^"<<i<<" ";
-//                                    break;
-//                                }
-
-//                }
-
     }
     catch (const char* msg)
     {
