@@ -81,6 +81,9 @@ public:
     //#####Encontrando o Polinômio Característico de uma Matriz#####//
     void pol();
     //#############################################################//
+
+    //#####Rotação de Jacobi#####///
+    void jacobi();
 };
 
 
