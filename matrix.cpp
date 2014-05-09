@@ -494,7 +494,7 @@ void Matrix::pol()
 
 }
 
-void Matrix::jacobi()
+void Matrix::francis()
 {
     try
     {
@@ -502,32 +502,46 @@ void Matrix::jacobi()
            throw "A matrix não é quadrada";
        else
        {
-           Matrix R, Q, temp, Mat1 = *this;
+           Matrix Q, temp, R, Mat1 = *this;
+           float max = 50;
 
            Q.eye(this->rows);
 
-
-           for(int i = 0; i < this->rows; i++ )
-               for(int j = i+1; j<this->rows; j++)
-               {
-                   temp.eye(this->rows);
-                   if (this->Mat[i][j] != 0)
-                   {
-                       temp.Mat[i][i] = (Mat1.Mat[i][i])/sqrt(pow(Mat1.Mat[i][i],2) + pow(Mat1.Mat[i][j],2));
-                       temp.Mat[j][j] = temp.Mat[i][i];
-                       temp.Mat[i][j] = (Mat1.Mat[i][j])/sqrt(pow(Mat1.Mat[i][i],2) + pow(Mat1.Mat[i][j],2));
-                       temp.Mat[j][i] = - temp.Mat[i][j];
-                   }
-                   Mat1 = temp*Mat1;
-                   Q = Q*(~temp);
-                   temp.print();
-                   Mat1.print();
-                   Q.print();
+           while(max > 0.01 )
+           {
+               for(int i = 0; i < this->rows; i++ )
+                    for(int j = i+1; j<this->rows; j++)
+                    {
+                        temp.eye(this->rows);
+                        if (Mat1.Mat[i][j] != 0)
+                        {
+                            temp.Mat[i][i] = (Mat1.Mat[i][i])/sqrt(pow(Mat1.Mat[i][i],2) + pow(Mat1.Mat[i][j],2));
+                            temp.Mat[j][j] = temp.Mat[i][i];
+                            temp.Mat[i][j] = (Mat1.Mat[i][j])/sqrt(pow(Mat1.Mat[i][i],2) + pow(Mat1.Mat[i][j],2));
+                            temp.Mat[j][i] = - temp.Mat[i][j];
+                        }
+                        Mat1.print();
+                        Mat1 = temp*Mat1;
+                        Q = Q*(~temp);
+                        temp.print();
+//                        Q.print();
 
                }
-           Mat1.print();
-           Q.print();
-          (Mat1*Q).print();
+//             Q.print();
+             (Mat1*Q).print();
+              for(int i = 0; i < this->rows; i++ )
+                   for(int j = i+1; j<this->rows; j++)
+                   {
+                       if (Mat1.Mat[i][j] < 0)
+                       {
+                           if (max < -(Mat1.Mat[i][j]))
+                                    max = -(Mat1.Mat[i][j]);
+                           else
+                                    max = Mat1.Mat[i][j];
+                       }
+                   }
+
+         }
        }
     }
     catch (const char* msg)
