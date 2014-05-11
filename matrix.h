@@ -3,6 +3,7 @@
 #include <string>
 #include <sstream>
 #include <math.h>
+#include <iostream>
 
 using namespace std;
 
@@ -15,6 +16,10 @@ private:
     //#####Verificação de Matriz Quadrada#####//
     bool sqr(Matrix Mat1);
     //#######################################//
+
+    //#####Verficação se é uma Matriz Idenditade#####//
+    bool ind(Matrix Mat1);
+    //##############################################//
 
 public:
     Matrix(); //Construtor
@@ -66,9 +71,9 @@ public:
     Matrix operator^(float exp);
     //####################################################//
 
-    //Separação de Cholesky//
-    void cholesky();
-    //Matrix choleskytrans ();
+    //#####Método reservado para futuros testes#####//
+    void testemetods();
+    //#############################################//
 
     //#####Inversa de uma Matriz#####//
     Matrix inv();
@@ -79,11 +84,16 @@ public:
     //#########################//
 
     //#####Encontrando o Polinômio Característico de uma Matriz#####//
-    void pol();
+    Matrix pol();
     //#############################################################//
 
-    //#####Rotação de Jacobi#####///
-    void francis();
+    //#####Método QR para encontrar os Autovalres#####//
+    Matrix eigenvalues();
+    //###############################################//
+
+    //#####Determinando da Matriz#####//
+    float det();
+    //###############################//
 };
 
 

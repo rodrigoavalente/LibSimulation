@@ -27,6 +27,48 @@ bool Matrix::sqr(Matrix Mat1)
     return vef;
 }
 
+bool Matrix::ind(Matrix Mat1)
+{
+    bool vef;
+    int x = 0, a = 0, b = 0;
+
+    for (int i = 0; i < Mat1.rows; i ++)
+        for(int j = 0; j < Mat1.rows; j++)
+            if ((i == j) && (Mat1.Mat[i][j]) == 1)
+                x++;
+    for(int i = 0; i < Mat1.rows; i++ )
+        for(int j = i+1; j < Mat1.cols; j++)
+        {
+            if (Mat1.Mat[i][j] != 0)
+            {
+                i = Mat1.rows + 1;
+                break;
+            }
+            else
+                a++;
+        }
+
+
+    for(int i = 0; i < Mat1.rows; i++ )
+        for(int j = i+1; j < Mat1.cols; j++)
+        {
+            if (Mat1.Mat[j][i] != 0)
+            {
+                i = Mat1.rows +1;
+                break;
+            }
+            else
+                b++;
+        }
+
+    if (x == (Mat1.rows) && (a != 0) && (b != 0))
+        vef = true;
+    else
+        vef = false;
+
+    return vef;
+}
+
 
 Matrix::Matrix(const Matrix & otherMatrix)//Cria uma cópia da Matriz
 {
@@ -332,85 +374,78 @@ Matrix Matrix::operator^(float exp)
 }
 
 
-void Matrix::cholesky()
+void Matrix::testemetods()
 {
-    Matrix L(this->rows, this->cols);
-    float temp;
+    try
+    {
+        if (!this->ind(*this))
+            throw "A matriz nao identidade";
+        else
+            throw "A matriz e identidade";
 
-
-   for(int i = 0; i < this->rows; i++)
-   {
-        for(int j = 0; j < this->cols; j++)
-        {
-            temp = 0;
-            if(i == j)
-            {
-                for(int k = 0; k < j; k++)
-                {
-                    temp+=((L.Mat[j][k])*(L.Mat[j][k]));
-                }
-
-               L.Mat[i][j]=sqrt((double)(this->Mat[i][j]-temp));
-            }
-
-            if(i > j)
-            {
-                for(int k = 1; k < j; k++)
-                    {
-                        temp+=((L.Mat[i][k]*L.Mat[j][k]));
-                    }
-                L.Mat[i][j]=(1/(L.Mat[j][j]))*((this->Mat[i][j])-temp);
-            }
-
-            if(i < j)
-            {
-                L.Mat[i][j] = 0;
-            }
-        }
-   }
-   L.print();
-   (~L).print();
-   (L*(~L)).print();
- }
+    }
+    catch (const char* msg)
+    {
+        cerr<<msg<<endl;
+    }
+}
 
 Matrix Matrix::inv()
 {
     Matrix Ret =*this, Id;
-    Id.eye(this->rows);
-
-    for(int i = 0; i < this->rows; i++ )
-        for(int j = i+1; j<this->rows; j++)
-        {
-            float m = Ret.Mat[j][i]/Ret.Mat[i][i];
-            for(int k = 0; k <this->cols; k++)
-            {
-                Ret.Mat[j][k] = Ret.Mat[j][k]-m*Ret.Mat[i][k];
-                Id.Mat[j][k] = Id.Mat[j][k]-m*Id.Mat[i][k];
-            }
-        }
 
 
-    for(int i = this->rows-1; i >=0 ; i-- )
-        for(int j = i-1; j>=0; j--)
-        {
-            float m = Ret.Mat[j][i]/Ret.Mat[i][i];
-            for(int k = 0; k <this->cols; k++)
-            {
-                Ret.Mat[j][k] = Ret.Mat[j][k]-m*Ret.Mat[i][k];
-                Id.Mat[j][k] = Id.Mat[j][k]-m*Id.Mat[i][k];
-            }
-        }
-
-    for(int i=0; i< this->rows; i++)
+    try
     {
-        float m = 1/Ret.Mat[i][i];
-        for(int j=0; j<this->rows; j++)
+        if (!this->sqr(*this))
+            throw "A matriz nao e quadrada";
+        else
         {
-             Ret.Mat[i][j] = m*Ret.Mat[i][j];
-             Id.Mat[i][j] = m*Id.Mat[i][j];
+            Id.eye(this->rows);
+
+            for(int i = 0; i < this->rows; i++ )
+                for(int j = i+1; j<this->rows; j++)
+                {
+                    float m = Ret.Mat[j][i]/Ret.Mat[i][i];
+                    for(int k = 0; k <this->cols; k++)
+                    {
+                        Ret.Mat[j][k] = Ret.Mat[j][k]-m*Ret.Mat[i][k];
+                        Id.Mat[j][k] = Id.Mat[j][k]-m*Id.Mat[i][k];
+                    }
+                }
+
+
+            for(int i = this->rows-1; i >=0 ; i-- )
+                for(int j = i-1; j>=0; j--)
+                {
+                    float m = Ret.Mat[j][i]/Ret.Mat[i][i];
+                    for(int k = 0; k <this->cols; k++)
+                    {
+                        Ret.Mat[j][k] = Ret.Mat[j][k]-m*Ret.Mat[i][k];
+                        Id.Mat[j][k] = Id.Mat[j][k]-m*Id.Mat[i][k];
+                    }
+                }
+
+            for(int i=0; i< this->rows; i++)
+            {
+                float m = 1/Ret.Mat[i][i];
+                for(int j=0; j<this->rows; j++)
+                {
+                     Ret.Mat[i][j] = m*Ret.Mat[i][j];
+                     Id.Mat[i][j] = m*Id.Mat[i][j];
+                }
+
+            }
         }
 
     }
+
+    catch (const char* msg)
+    {
+        cerr<<msg<<endl;
+    }
+
+
 
     return Id;
 }
@@ -437,10 +472,9 @@ float Matrix::trace()
     return traco;
 }
 
-void Matrix::pol()
+Matrix Matrix::pol()
 {
-    float *q;
-    Matrix A = *this, B, I, C;
+    Matrix A = *this, B, I, C, ind(1, this->cols + 1);
     int sinal;
 
     try
@@ -449,103 +483,122 @@ void Matrix::pol()
              throw "A matrix nao e quadrada";
          else
              I.eye(this->rows);
-             q = (float*)calloc(this->rows,(this->rows)*sizeof(float));
              C = A;
              sinal = pow(-1, this->rows);
-             for(int i = 0; i < this->rows; i++ )
+             ind.Mat[0][0] = 1;
+             for(int i = 1; i <= this->rows; i++ )
              {
-                    q[i] = C.trace()/(i+1);
-                    B = C - q[i]*I;
+                    ind.Mat[0][i] = (C.trace()/i);
+                    B = C - ind.Mat[0][i]*I;
                     C = A*B;
+                    ind.Mat[0][i] = -ind.Mat[0][i];
 
              }
-             if (sinal < 0)
-                cout<<"-x^"<<(this->rows)<<" ";
-             else
-                 cout<<"x^"<<(this->rows)<<" ";
-             for(int i = 0; i < this->rows; i++)
-             {
-                 q[i] = sinal*(-q[i]);
+             for (int i = 0; i < (ind.cols); i++)
+                 ind.Mat[0][i] = ind.Mat[0][i]*sinal;
 
-                 if ((i + 1) == this->rows)
-                    cout<<q[i]<<" ";
-                 else if (q[i] > 0)
-                            {
-                                if (q[i] == 1)
-                                    cout<<"+x^"<<(this->rows - i - 1)<<" ";
-                                else
-                                    cout<<"+"<<q[i]<<"x^"<<(this->rows - i - 1)<<" ";
-                            }
-                      else
-                            {
-                                if (q[i] == -1)
-                                    cout<<"-x^"<<(this->rows - i - 1)<<" ";
-                                else
-                                    cout<<q[i]<<"x^"<<(this->rows - i - 1)<<" ";
-                            }
-
-
-             }
     }
     catch (const char* msg)
     {
          cerr<<msg<<endl;
     }
 
+    cout<<"Os indices do polinomio sao: "<<endl;
+    ind.print();
+
+    return ind;
+
 }
 
-void Matrix::francis()
+Matrix Matrix::eigenvalues()
 {
+    Matrix autovlr(1, this->rows);
+
     try
     {
        if (!this->sqr(*this))
            throw "A matrix não é quadrada";
        else
+           if (!this->ind(*this))
        {
-           Matrix Q, temp, R, Mat1 = *this;
-           float max = 50;
+                   Matrix Q, temp, R, A = *this;
+                   float max = 1000;
 
-           Q.eye(this->rows);
-
-           while(max > 0.01 )
-           {
-               for(int i = 0; i < this->rows; i++ )
-                    for(int j = i+1; j<this->rows; j++)
-                    {
-                        temp.eye(this->rows);
-                        if (Mat1.Mat[i][j] != 0)
-                        {
-                            temp.Mat[i][i] = (Mat1.Mat[i][i])/sqrt(pow(Mat1.Mat[i][i],2) + pow(Mat1.Mat[i][j],2));
-                            temp.Mat[j][j] = temp.Mat[i][i];
-                            temp.Mat[i][j] = (Mat1.Mat[i][j])/sqrt(pow(Mat1.Mat[i][i],2) + pow(Mat1.Mat[i][j],2));
-                            temp.Mat[j][i] = - temp.Mat[i][j];
-                        }
-                        Mat1.print();
-                        Mat1 = temp*Mat1;
-                        Q = Q*(~temp);
-                        temp.print();
-//                        Q.print();
-
-               }
-//             Q.print();
-             (Mat1*Q).print();
-              for(int i = 0; i < this->rows; i++ )
-                   for(int j = i+1; j<this->rows; j++)
+                   Q.eye(this->rows);
+                   R.eye(this->rows);
+                   while (max > 0.00001)
                    {
-                       if (Mat1.Mat[i][j] < 0)
-                       {
-                           if (max < -(Mat1.Mat[i][j]))
-                                    max = -(Mat1.Mat[i][j]);
-                           else
-                                    max = Mat1.Mat[i][j];
-                       }
-                   }
+                       for(int i = 0; i < this->rows; i++ )
+                           for(int j = i+1; j<this->rows; j++)
+                               {
+                                        temp.eye(this->rows);
+                                        if (A.Mat[i][j] != 0)
+                                        {
+                                            temp.Mat[i][i] = (A.Mat[i][i])/sqrt(pow(A.Mat[i][i],2) + pow(A.Mat[i][j],2));
+                                            temp.Mat[j][j] = temp.Mat[i][i];
+                                            temp.Mat[i][j] = (A.Mat[i][j])/sqrt(pow(A.Mat[i][i],2) + pow(A.Mat[i][j],2));
+                                            temp.Mat[j][i] = - temp.Mat[i][j];
+                                        }
+                                       R = temp*A;
+                                       A = R*(~temp);
+                           }
+                       for(int i = 0; i < this->rows; i++ )
+                           for(int j = i+1; j< this->rows; j++)
+                           {
+                               if ((A.Mat[i][j] > 0) && (A.Mat[i][j]) < max)
+                                   max = A.Mat[i][j];
+                               else if((A.Mat[i][j] < 0) && (-1*A.Mat[i][j]) < max)
+                                   max = -1*(A.Mat[i][j]);
+                           }
+                    }
+                   for(int i = 0; i < this->rows; i++ )
+                       for(int j = 0; j< this->rows; j++)
+                           if (i == j)
+                                autovlr.Mat[0][i] = A.Mat[i][j];
 
-         }
+
+
+
        }
+            else
+               for(int i = 0; i < this->rows; i++ )
+                   autovlr.Mat[0][i] = 1;
+
+      }
+
+    catch (const char* msg)
+    {
+        cerr<<msg<<endl;
+    }
+
+    return autovlr;
+}
+
+float Matrix::det()
+{
+    float x = 1;
+    Matrix A;
+
+    try
+    {
+        if (!this->sqr(*this))
+            throw "A matrix não é quadrada";
+        else if(!this->ind(*this))
+             {
+                A = this->eigenvalues();
+
+                for (int i = 0; i < A.cols; i++)
+                    x *= A.Mat[0][i];
+             }
+             else
+                x = 1;
     }
     catch (const char* msg)
     {
         cerr<<msg<<endl;
     }
+
+    return x;
+
+
 }
