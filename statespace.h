@@ -3,7 +3,9 @@
 
 #include "lsim.h"
 
-class StateSpace
+class StateSpace //Lembrando que essa classe não está representando somente uma representação de equações diferenciais  na
+                //forma de espaço de estados, mas também na forma de função de transferência e ainda nas suas formas discretas
+                //Portanto o nome da classe deveria ser mudado para que isso seja claro
 {
 private:
     float SampleTime, TimeSimulation;
