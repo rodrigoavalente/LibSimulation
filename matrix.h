@@ -94,6 +94,10 @@ public:
     //#####Determinando da Matriz#####//
     float det();
     //###############################//
+
+	// Recebendo informações das linhas e colunas das Matrizes
+	int getCols();
+	int getRows();
 };
 
 

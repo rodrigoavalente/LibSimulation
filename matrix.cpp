@@ -602,3 +602,13 @@ float Matrix::det()
 
 
 }
+
+int Matrix::getRows()
+{
+	return this->rows;
+}
+
+int Matrix::getCols()
+{
+	return this->cols;
+}
