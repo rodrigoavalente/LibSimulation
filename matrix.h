@@ -95,9 +95,15 @@ public:
     float det();
     //###############################//
 
-	// Recebendo informações das linhas e colunas das Matrizes
-	int getCols();
+    //#####Recebendo informações das linhas e colunas das Matrizes#####//
+    int getCols();
 	int getRows();
+    //#######################################################//
+
+    //#####Recebendo um elemento especifíco da Matriz#####//
+    float getMat(int row, int col);
+    //###################################################//
+
 };
 
 
