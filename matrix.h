@@ -4,6 +4,7 @@
 #include <sstream>
 #include <math.h>
 #include <iostream>
+#include <fstream>
 
 using namespace std;
 
@@ -32,7 +33,7 @@ public:
     void add(int rol, int col, float number);
     void print();
     void eye(int num);
-
+    void ones(int row, int col);
     void zeros(int row, int col);
 
     //#######Criação do Operador de Soma#########//

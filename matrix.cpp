@@ -617,3 +617,10 @@ float Matrix::getMat(int row, int col)
 {
     return this->Mat[row][col];
 }
+
+void Matrix::ones(int row, int col)
+{
+    for (int i = 0; i < row; i++)
+        for (int j = 0; j < col; j++)
+            this->Mat[i][j] = 1;
+}
