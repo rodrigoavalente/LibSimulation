@@ -3,9 +3,7 @@
 
 #include "lsim.h"
 
-class StateSpace //Lembrando que essa classe não está representando somente uma representação de equações diferenciais  na
-                //forma de espaço de estados, mas também na forma de função de transferência e ainda nas suas formas discretas
-                //Portanto o nome da classe deveria ser mudado para que isso seja claro
+class StateSpace
 {
 private:
     float SampleTime, TimeSimulation;
@@ -20,10 +18,10 @@ public:
     StateSpace(Matrix NumdIn, Matrix DendIn, float Time);
 
 //    void ss2tf();
-//    void tf2ss();
+    void tf2ss();
     void printSS();
     void printTF();
-    void c2d();
+    void c2d(float Time);
 
     float factorial(float n);
 };
