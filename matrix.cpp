@@ -612,3 +612,8 @@ int Matrix::getCols()
 {
 	return this->cols;
 }
+
+float Matrix::getMat(int row, int col)
+{
+    return this->Mat[row][col];
+}
