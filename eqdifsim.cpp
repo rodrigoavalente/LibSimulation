@@ -1,4 +1,4 @@
-#include "statespace.h"
+#include "eqdifsim.h"
 
 StateSpace::StateSpace()
 {
