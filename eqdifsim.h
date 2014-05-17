@@ -1,5 +1,5 @@
-#ifndef STATESPACE_H
-#define STATESPACE_H
+#ifndef EQDIFSIM_H
+#define EQDIFSIM_H
 
 #include "lsim.h"
 
@@ -26,4 +26,4 @@ public:
     float factorial(float n);
 };
 
-#endif // STATESPACE_H
+#endif // EQDIFSIM_H
