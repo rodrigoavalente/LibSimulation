@@ -1,44 +1,49 @@
 #include "eqdifsim.h"
 
-StateSpace::StateSpace()
+EqdifSim::EqdifSim()
 {
 
 }
 
-StateSpace::StateSpace(Matrix AdIn, Matrix BdIn, Matrix CdIn, Matrix DdIn, float Time)
+EqdifSim::EqdifSim(Matrix AdIn, Matrix BdIn, Matrix CdIn, Matrix DdIn, float Time)
 {
     this->Ad = AdIn;
     this->Bd = BdIn;
     this->Cd = CdIn;
     this->Dd = DdIn;
+    ss2tfd();
     this->SampleTime = Time;
 }
 
-StateSpace::StateSpace(Matrix AIn, Matrix BIn, Matrix CIn, Matrix DIn)
+EqdifSim::EqdifSim(Matrix AIn, Matrix BIn, Matrix CIn, Matrix DIn)
 {
     this->A = AIn;
     this->B = BIn;
     this->C = CIn;
     this->D = DIn;
+    ss2tfc();
     this->typeModel = "SSContinuous";
+
 }
 
-StateSpace::StateSpace(Matrix NumdIn, Matrix DendIn, float Time)
+EqdifSim::EqdifSim(Matrix NumdIn, Matrix DendIn, float Time)
 {
     this->Numd = NumdIn;
     this->Dend = DendIn;
     this->SampleTime = Time;
+    tf2ssd();
     this->typeModel = "TFDiscrete";
 }
 
-StateSpace::StateSpace(Matrix NumIn, Matrix DenIn)
+EqdifSim::EqdifSim(Matrix NumIn, Matrix DenIn)
 {
     this->Num = NumIn;
     this->Den = DenIn;
+    tf2ssc();
     this->typeModel = "TFContinuous";
 }
 
-void StateSpace::c2d(float Time)
+void EqdifSim::c2d(float Time)
 {
     this->SampleTime = Time;
     this->Ad.zeros(this->A.getRows(), this->A.getCols());
@@ -51,7 +56,7 @@ void StateSpace::c2d(float Time)
 
 }
 
-void StateSpace::printSS()
+void EqdifSim::printSS()
 {
 
     if (this->typeModel == "SSDiscrete")
@@ -81,7 +86,7 @@ void StateSpace::printSS()
 
 }
 
-void StateSpace::tf2ss()
+void EqdifSim::tf2ssc()
 {
     Matrix I, ZeroVector, tempDen( 1, this->Den.getCols()-1);
 
@@ -112,20 +117,68 @@ void StateSpace::tf2ss()
 
         for (int i = 1; i <= this->B.getRows(); i++)
          {
-            C.add( 1, i, this->Num.getMat( 1, i+1)- this->Den.getMat( 1, i+1)*B0);
+            this->C.add( 1, i, this->Num.getMat( 1, i+1)- this->Den.getMat( 1, i+1)*B0);
          }
         this->D.add( 1, 1,  B0);
     }
-
-
-
-
-
-
-
 }
 
-float StateSpace::factorial(float n)
+void EqdifSim::tf2ssd()
+{
+    Matrix I, ZeroVector, tempDen( 1, this->Dend.getCols()-1);
+
+    I.eye(this->Dend.getCols()-2);
+    ZeroVector.zeros( this->Dend.getCols()-2, 1);
+    for (int i = 2; i <= this->Dend.getCols(); i++)
+        tempDen.add( 1, i-1, -(this->Dend.getMat( 1, i)));
+
+    this->Ad = tempDen||(I|ZeroVector);
+    this->Bd.zeros(this->Ad.getRows(), 1);
+    this->Bd.add( 1, 1, 1);
+
+    if (this->Numd.getCols() == 1)
+    {
+        this->Cd.add( 1, this->Bd.getRows(), this->Numd.getMat( 1, 1));
+        this->Dd.add( 1, 1, 0);
+    }
+    else if (this->Numd.getCols() < this->Dend.getCols())
+    {
+        for (int i = this->Bd.getRows(); i > 1; i--)
+            this->Cd.add( 1, i, this->Numd.getMat( 1, this->Numd.getCols() -( this->Bd.getRows() - i )));
+        this->Dd.add( 1, 1, 0);
+    }
+
+    else if (this->Numd.getCols() == this->Dend.getCols())
+    {
+        float B0 = this->Numd.getMat( 1, 1);
+
+        for (int i = 1; i <= this->Bd.getRows(); i++)
+         {
+            this->Cd.add( 1, i, this->Numd.getMat( 1, i+1)- this->Dend.getMat( 1, i+1)*B0);
+         }
+        this->Dd.add( 1, 1,  B0);
+    }
+}
+
+void EqdifSim::ss2tfc()
+{
+    Matrix Temp;
+
+    Temp = this->A - (this->B*this->C);
+    this->Num = Temp.pol();
+    this->Den = this->A.pol();
+}
+
+void EqdifSim::ss2tfd()
+{
+    Matrix Temp;
+
+    Temp = this->Ad - (this->Bd*this->Cd);
+    this->Numd = Temp.pol();
+    this->Dend = this->Ad.pol();
+}
+
+float EqdifSim::factorial(float n)
 {
     float retval = 1;
 

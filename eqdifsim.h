@@ -3,22 +3,26 @@
 
 #include "lsim.h"
 
-class StateSpace
+class EqdifSim
 {
 private:
     float SampleTime, TimeSimulation;
     Matrix A, B, C, D, Num, Den, Ad, Bd, Cd, Dd, Numd, Dend;
     string typeModel;
+    void tf2ssc();
+    void tf2ssd();
+    void ss2tfc();
+    void ss2tfd();
 
 public:
-    StateSpace();
-    StateSpace(Matrix AIn, Matrix BIn, Matrix CIn, Matrix DIn);
-    StateSpace(Matrix AdIn, Matrix BdIn, Matrix CdIn, Matrix DdIn, float Time);
-    StateSpace(Matrix NumIn, Matrix DenIn);
-    StateSpace(Matrix NumdIn, Matrix DendIn, float Time);
+    EqdifSim();
+    EqdifSim(Matrix AIn, Matrix BIn, Matrix CIn, Matrix DIn);
+    EqdifSim(Matrix AdIn, Matrix BdIn, Matrix CdIn, Matrix DdIn, float Time);
+    EqdifSim(Matrix NumIn, Matrix DenIn);
+    EqdifSim(Matrix NumdIn, Matrix DendIn, float Time);
 
 //    void ss2tf();
-    void tf2ss();
+
     void printSS();
     void printTF();
     void c2d(float Time);
