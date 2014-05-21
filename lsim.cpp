@@ -28,9 +28,9 @@ void Lsim::addIO(const char *namefile)
             string input = "", output = "", time = "";
 
 
-            while(getline( myfile, data))
+            while(!myfile.eof())
             {
-                myfile>>data;
+                getline(myfile, data);
                 posBar = data.find("-");
                 input = input + data.substr( 0, posBar) + ";";
                 data.erase( 0, posBar+1);
