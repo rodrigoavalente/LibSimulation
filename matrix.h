@@ -105,6 +105,8 @@ public:
     float getMat(int row, int col);
     //###################################################//
 
+    Matrix operator> (float num);
+    friend Matrix diff(Matrix M, float h);
 };
 
 

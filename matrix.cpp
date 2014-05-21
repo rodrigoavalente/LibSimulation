@@ -373,6 +373,17 @@ Matrix Matrix::operator^(float exp)
     return Ret;
 }
 
+Matrix Matrix::operator >(float num)
+{
+    Matrix Ret = *this;
+
+    for(int i = 0; i < Ret.rows; i++)
+        for(int j = 0; j < Ret.cols; j++)
+            Ret.Mat[i][j] = pow(this->Mat[i][j],num);
+
+    return Ret;
+}
+
 
 void Matrix::testemetods()
 {
@@ -601,6 +612,16 @@ float Matrix::det()
     return x;
 
 
+}
+
+Matrix diff(Matrix M, float h)
+{
+    Matrix Ret;
+    for(int i = 0; i < M.rows-1; i++)
+        for(int j = 0; j < M.cols; j++)
+            Ret.add(i+1,j+1,(M.Mat[i+1][j] - M.Mat[i][j])/h);
+
+    return Ret;
 }
 
 int Matrix::getRows()
