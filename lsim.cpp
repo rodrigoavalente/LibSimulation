@@ -11,49 +11,7 @@ void Lsim::addIO(Matrix in, Matrix out)
     this->y = out;
 }
 
-void Lsim::addIO(const char *namefile)
-{
-    ifstream myfile(namefile);
-    string data;
 
-    try
-    {
-        if (!myfile.is_open())
-            throw "Nao foi possivel abrir o arquivo";
-        else
-        {
-            int posBar;
-            string input = "", output = "", time = "";
-
-
-            while(!myfile.eof())
-            {
-                getline( myfile, data);
-                posBar = data.find("|");
-                input = input + data.substr( 0, posBar) + ";";
-                data.erase( 0, posBar+1);
-                posBar = data.find("|");
-                output = output + data.substr(0, posBar) + ";";
-                data.erase( 0, posBar+1);
-                time = time + data + ";";
-            }
-            myfile.close();
-            this->u = input;
-            this->y = output;
-            this->PeriodicTime = time;
-            this->u.print();
-            this->y.print();
-            this->PeriodicTime.print();
-            //Erro aparece ao liberar a memória da matriz this*
-
-        }
-
-    }
-    catch(const char* msg)
-    {
-        cerr<<msg<<endl;
-    }
-}
 
 
 void Lsim::modelCoef(Matrix coef)
@@ -154,4 +112,48 @@ Matrix Lsim::getInput()
 Matrix Lsim::getOutput()
 {
     return this->y;
+}
+
+void addIO(const char *namefile)
+{
+    ifstream myfile(namefile);
+    string data;
+
+        try
+        {
+            if (!myfile.is_open())
+                throw "Nao foi possivel abrir o arquivo";
+            else
+            {
+                int posBar;
+                string input = "", output = "", time = "";
+
+
+                while(!myfile.eof())
+                {
+                    getline( myfile, data);
+                    posBar = data.find("|");
+                    input = input + data.substr( 0, posBar) + ";";
+                    data.erase( 0, posBar+1);
+                    posBar = data.find("|");
+                    output = output + data.substr(0, posBar) + ";";
+                    data.erase( 0, posBar+1);
+                    time = time + data + ";";
+                }
+                myfile.close();
+                this->u = input;
+                this->y = output;
+                this->PeriodicTime = time;
+                this->u.print();
+                this->y.print();
+                this->PeriodicTime.print();
+                //Erro aparece ao liberar a memória da matriz this*
+
+            }
+
+        }
+        catch(const char* msg)
+        {
+            cerr<<msg<<endl;
+        }
 }
