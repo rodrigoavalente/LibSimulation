@@ -7,13 +7,13 @@
 class Lsim
 {
     private:
-        Matrix y,u,A,X,b, PeriodicTime;//Saídas,Entradas,Matriz montada a partir dos dados, coeficientes, Saída simulada
+        Matrix output, input, A, X, b, PeriodicTime;//Saídas,Entradas,Matriz montada a partir dos dados, coeficientes, Saída simulada
         string Model;
 
     public:
         Lsim();
         void addIO(Matrix in, Matrix out);
-        friend void addIO(const char *namefile);
+        friend void addIO(const char *namefile, Lsim Sis);
         void modelCoef(Matrix coef);
     //Modelos polinomiais
         void polyModel(int grau);

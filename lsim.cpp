@@ -7,8 +7,8 @@ Lsim::Lsim()
 
 void Lsim::addIO(Matrix in, Matrix out)
 {
-    this->u = in;
-    this->y = out;
+    this->input = in;
+    this->output = out;
 }
 
 
@@ -21,10 +21,10 @@ void Lsim::modelCoef(Matrix coef)
 void Lsim::polyModel(int grau)
 {
     this->Model = "polinomial";
-    this->u.print();
-    this->A.ones(this->u.getRows(),1);
+    this->input.print();
+    this->A.ones(this->input.getRows(),1);
     for(int i = 1; i <= grau; i++)
-        this->A = this->A|(this->u>i);
+        this->A = this->A|(this->input>i);
 }
 
 void Lsim::simPoly(int grau)
@@ -36,7 +36,7 @@ void Lsim::simPoly(int grau)
 void Lsim::polyCoef(int grau)
 {
     this->polyModel(grau);
-    this->X = ((~this->A*this->A)^-1)*(~this->A)*this->y;
+    this->X = ((~this->A*this->A)^-1)*(~this->A)*this->output;
 }
 
 //Modelos ARX (Auto Recursive with eXogenous output)
@@ -51,20 +51,20 @@ void Lsim::arxModel(int ny, int nu)
     else
         maxNuNy = nu;
 
-    if(this->y.getRows() > this->u.getRows())
-        minRowInOut = this->u.getRows();
+    if(this->output.getRows() > this->input.getRows())
+        minRowInOut = this->input.getRows();
     else
-        minRowInOut = this->y.getRows();
+        minRowInOut = this->output.getRows();
 
     for(int i = maxNuNy; i < minRowInOut; i++)
     {
-        this->b.add(i-maxNuNy+1,1,this->y.getMat( i, 1));
+        this->b.add(i-maxNuNy+1,1,this->output.getMat( i, 1));
         for(int j = 0; j < nu+ny; j++)
         {
             if(j<ny)
-                this->A.add(i-maxNuNy+1,j+1,-this->y.getMat( i-ny+j,1));
+                this->A.add(i-maxNuNy+1,j+1,-this->output.getMat( i-ny+j,1));
             else
-                this->A.add(i-maxNuNy+1,j+1,this->u.getMat( i-nu-ny+j, 1));
+                this->A.add(i-maxNuNy+1,j+1,this->input.getMat( i-nu-ny+j, 1));
         }
     }
 
@@ -86,14 +86,14 @@ void Lsim::arxCoef(int ny, int nu)
 void Lsim::eqdifModel(float h)
 {
     Matrix dy, d2y;
-    dy = diff(this->y,h);
+    dy = diff(this->output,h);
     d2y = diff(dy,h);
 
     for(int i = 0; i < d2y.getRows(); i++)
     {
-        this->A.add(i+1,1,-this->y.getMat( i, 1));
+        this->A.add(i+1,1,-this->output.getMat( i, 1));
         this->A.add(i+1,2,-dy.getMat( i, 1));
-        this->A.add(i+1,3,this->u.getMat( i, 1));
+        this->A.add(i+1,3,this->input.getMat( i, 1));
     }
     this->b = d2y;
 }
@@ -106,15 +106,15 @@ void Lsim::eqdifCoef(float h)
 
 Matrix Lsim::getInput()
 {
-    return this->u;
+    return this->input;
 }
 
 Matrix Lsim::getOutput()
 {
-    return this->y;
+    return this->output;
 }
 
-void addIO(const char *namefile)
+void addIO(const char *namefile, Lsim Sis)
 {
     ifstream myfile(namefile);
     string data;
@@ -141,14 +141,10 @@ void addIO(const char *namefile)
                     time = time + data + ";";
                 }
                 myfile.close();
-                this->u = input;
-                this->y = output;
-                this->PeriodicTime = time;
-                this->u.print();
-                this->y.print();
-                this->PeriodicTime.print();
-                //Erro aparece ao liberar a memória da matriz this*
 
+                Sis.input = input;
+                Sis.output = output;
+                Sis.PeriodicTime = time;
             }
 
         }
