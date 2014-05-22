@@ -44,6 +44,7 @@ void Lsim::addIO(const char *namefile)
             this->u.print();
             this->y.print();
             this->PeriodicTime.print();
+            //Erro aparece ao liberar a memória da matriz this*
 
         }
 
