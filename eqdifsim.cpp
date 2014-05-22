@@ -56,6 +56,33 @@ void EqdifSim::c2d(float Time)
 
 }
 
+void EqdifSim::d2c()
+{
+    Matrix Mat, E, Temp, Root, I, ZeroVector;
+
+
+
+
+    Mat = this->Ad.eigenvalues();
+
+    for(int j = 1; j < 4; j++)//deixar a ordem flexivel
+        E.add( 1, j+1, pow(this->SampleTime, j)/factorial(j));
+
+    I.eye(E.getCols()-2);
+    ZeroVector.zeros( E.getCols()-2, 1);
+
+    for (int i = 0; i < Mat.getRows(); i++)
+    {
+        E.add(1, 1, 1 - Mat.getMat(1, i+1));
+        Temp = E||(I|ZeroVector);
+        Root = Temp.eigenvalues();
+
+    }
+
+}
+
+
+
 void EqdifSim::printSS()
 {
 

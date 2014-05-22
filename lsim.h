@@ -26,6 +26,9 @@ class Lsim
     //Modelos de equações diferenciais
         void eqdifModel(float h);
         void eqdifCoef(float h);
+    //Retornando a entrada e a saída
+        Matrix getInput();
+        Matrix getOutput();
 
 };
 

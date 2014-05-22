@@ -26,6 +26,7 @@ public:
     void printSS();
     void printTF();
     void c2d(float Time);
+    void d2c();
 
     float factorial(float n);
 };

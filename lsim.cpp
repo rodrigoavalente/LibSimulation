@@ -13,10 +13,8 @@ void Lsim::addIO(Matrix in, Matrix out)
 
 void Lsim::addIO(const char *namefile)
 {
-    //char *name = const_cast<char*>(namefile.c_str());
     ifstream myfile(namefile);
     string data;
-
 
     try
     {
@@ -30,22 +28,24 @@ void Lsim::addIO(const char *namefile)
 
             while(!myfile.eof())
             {
-                getline(myfile, data);
-                posBar = data.find("-");
+                getline( myfile, data);
+                posBar = data.find("|");
                 input = input + data.substr( 0, posBar) + ";";
                 data.erase( 0, posBar+1);
-                posBar = data.find("-");
+                posBar = data.find("|");
                 output = output + data.substr(0, posBar) + ";";
                 data.erase( 0, posBar+1);
                 time = time + data + ";";
-                data.erase(0, time.length());
             }
+            myfile.close();
             this->u = input;
             this->y = output;
             this->PeriodicTime = time;
             this->u.print();
             this->y.print();
             this->PeriodicTime.print();
+            //Erro aparece ao liberar a memória da matriz this*
+
         }
 
     }
@@ -53,10 +53,8 @@ void Lsim::addIO(const char *namefile)
     {
         cerr<<msg<<endl;
     }
-
-
-
 }
+
 
 void Lsim::modelCoef(Matrix coef)
 {
@@ -113,6 +111,8 @@ void Lsim::arxModel(int ny, int nu)
     }
 
 }
+
+
 void Lsim::simArx(int ny, int nu)
 {
     this->arxModel(ny,nu);
@@ -144,4 +144,14 @@ void Lsim::eqdifCoef(float h)
 {
     this->eqdifModel(h);
     this->X = ((~this->A*this->A)^-1)*(~this->A)*this->b;
+}
+
+Matrix Lsim::getInput()
+{
+    return this->u;
+}
+
+Matrix Lsim::getOutput()
+{
+    return this->y;
 }

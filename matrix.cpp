@@ -80,15 +80,20 @@ Matrix::Matrix(const Matrix & otherMatrix)//Cria uma cópia da Matriz
 
 Matrix::~Matrix()//Destrutor da Classe Matriz
 {
-    for (int i = 0; i < this->rows; i++)
+    if ((this->rows != 0) && (this->cols != 0))
     {
-        free(this->Mat[i]);
-        this->Mat[i] = NULL;
+        for (int i = 0; i < this->rows; i++)
+        {
+            free(this->Mat[i]);
+            this->Mat[i] = NULL;
+        }
+        free(this->Mat);
+        this->rows = 0;
+        this->cols = 0;
+        this->Mat = NULL;
     }
-    free(this->Mat);
-    this->rows = 0;
-    this->cols = 0;
-    this->Mat = NULL;
+
+
 }
 
 void Matrix::init(int row, int col)//Aloca o espaço de memória para a Matriz e inicializa com 0
@@ -644,4 +649,17 @@ void Matrix::ones(int row, int col)
     for (int i = 0; i < row; i++)
         for (int j = 0; j < col; j++)
             this->Mat[i][j] = 1;
+}
+
+Matrix max(Matrix M)
+{
+    int i, j;
+    float maximum = this->Mat[0][0];
+
+      for(i = 0; i < this->rows; i++)
+        for(j = 0; j < this->cols; j++)
+          if(maximum < this->Mat[i][j])
+            maximum = this->Mat[i][j];
+
+      return maximum;
 }

@@ -107,6 +107,9 @@ public:
 
     Matrix operator> (float num);
     friend Matrix diff(Matrix M, float h);
+
+    friend Matrix abs(Matrix M);
+    friend Matrix max(Matrix M);
 };
 
 
