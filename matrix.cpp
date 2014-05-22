@@ -651,15 +651,4 @@ void Matrix::ones(int row, int col)
             this->Mat[i][j] = 1;
 }
 
-Matrix max(Matrix M)
-{
-    int i, j;
-    float maximum = this->Mat[0][0];
 
-      for(i = 0; i < this->rows; i++)
-        for(j = 0; j < this->cols; j++)
-          if(maximum < this->Mat[i][j])
-            maximum = this->Mat[i][j];
-
-      return maximum;
-}
