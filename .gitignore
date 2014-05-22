@@ -1,0 +1,5 @@
+#Ignorar arquivos específicos
+.pro
+
+#Arquivos que iniciam com determinados nomes
+main.*
