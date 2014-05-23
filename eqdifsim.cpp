@@ -12,7 +12,10 @@ EqdifSim::EqdifSim(Matrix AdIn, Matrix BdIn, Matrix CdIn, Matrix DdIn, float Tim
     this->Cd = CdIn;
     this->Dd = DdIn;
     ss2tfd();
+    d2c();
+    tf2ssc();
     this->SampleTime = Time;
+    this->typeModel = "SSDiscrete";
 }
 
 EqdifSim::EqdifSim(Matrix AIn, Matrix BIn, Matrix CIn, Matrix DIn)
@@ -21,8 +24,12 @@ EqdifSim::EqdifSim(Matrix AIn, Matrix BIn, Matrix CIn, Matrix DIn)
     this->B = BIn;
     this->C = CIn;
     this->D = DIn;
+//    this->SampleTime = 0.1;
     ss2tfc();
+    c2d(0.1);
+    ss2tfd();
     this->typeModel = "SSContinuous";
+
 
 }
 
@@ -32,6 +39,8 @@ EqdifSim::EqdifSim(Matrix NumdIn, Matrix DendIn, float Time)
     this->Dend = DendIn;
     this->SampleTime = Time;
     tf2ssd();
+    d2c();
+    ss2tfc();
     this->typeModel = "TFDiscrete";
 }
 
@@ -39,8 +48,12 @@ EqdifSim::EqdifSim(Matrix NumIn, Matrix DenIn)
 {
     this->Num = NumIn;
     this->Den = DenIn;
+//    this->SampleTime = 0.1;
     tf2ssc();
+    c2d(0.1);
+    ss2tfd();
     this->typeModel = "TFContinuous";
+
 }
 
 void EqdifSim::c2d(float Time)
@@ -52,19 +65,16 @@ void EqdifSim::c2d(float Time)
     this->Bd = this->A.inv()*(this->Ad - (this->Ad^0))*this->B;
     this->Cd = this->C;
     this->Dd = this->D;
-    this->typeModel = "SSDiscrete";
+//    this->typeModel = "SSDiscrete";
 
 }
 
 void EqdifSim::d2c()
 {
-    Matrix Mat, E, Temp, Root, I, ZeroVector;
-
-
-
+    Matrix Mat, E, Temp, Root, I, ZeroVector, IAd;
 
     Mat = this->Ad.eigenvalues();
-
+    IAd.eye(this->Ad.getRows());
     for(int j = 1; j < 4; j++)//deixar a ordem flexivel
         E.add( 1, j+1, pow(this->SampleTime, j)/factorial(j));
 
@@ -73,12 +83,15 @@ void EqdifSim::d2c()
 
     for (int i = 0; i < Mat.getRows(); i++)
     {
-        E.add(1, 1, 1 - Mat.getMat(1, i+1));
+        E.add( 1, 1, 1 - Mat.getMat(1, i+1));
         Temp = E||(I|ZeroVector);
         Root = Temp.eigenvalues();
-
+        float autovalor = max(abs(Root));
+        this->A.add( i+1, i+1, autovalor);
     }
-
+    this->B = (((this->A^-1)*(this->Ad - IAd))^-1)*this->Bd;
+    this->C = this->Cd;
+    this->D = this->Dd;
 }
 
 
@@ -111,6 +124,118 @@ void EqdifSim::printSS()
         cout<<endl;
     }
 
+}
+
+void EqdifSim::printTF()
+{
+    int maxSize;
+    char x;
+    Matrix num, den;
+
+    if(this->typeModel == "TFContinous")
+    {
+        num = this->Num;
+        den = this->Den;
+        x = 's';
+    }
+    else
+    {
+        num = this->Numd;
+        den = this->Dend;
+        x = 'z';
+    }
+    if(num.length() > den.length())
+        maxSize = num.length();
+    else
+        maxSize = den.length();
+
+    if(den.length() == 0)
+    {
+        if(num.length() >= 2)
+        {
+            for(int i = 0; i < num.length() - 2; i++)
+            {
+                if(num.getMat( 1, i+1) != 0)
+                {
+                    if(num.getMat( 1, i+1) != 1)
+                        std::cout << num.getMat( 1, i+1);
+                    std::cout << x << '^' << num.length() - i - 1 << ' ';
+                    if(i != num.length() - 3)
+                        std::cout << '+' << ' ';
+                }
+            }
+            if(num.getMat( 1, num.length() - 1)  != 0)
+            {
+                if(num.getMat( 1, num.length() - 1) != 1)
+                        std::cout << '+' << ' ' << num.getMat( 1, num.length() - 1);
+                std::cout << x << ' ';
+            }
+        }
+        if(num.getMat( 1, num.length()) != 0)
+            std::cout << '+' << ' ' << num.getMat( 1, num.length()) << '\n';
+
+    }
+    else {
+        if(num.length() >= 2)
+        {
+            for(int i = 0; i < num.length() - 2; i++)
+            {
+                if(num.getMat( 1, i+1) != 0)
+                {
+                    if(num.getMat( 1, i+1) != 1)
+                        std::cout << num.getMat( 1, i+1);
+                    std::cout << x << '^' << num.length() - i - 1 << ' ';
+                    if( i != num.length() - 3)
+                       std::cout << '+' << ' ';
+                }
+            }
+            if(num.getMat( 1, num.length() - 1) != 0)
+            {
+                if(num.getMat( 1, num.length() - 1) != 1)
+                    std::cout << num.getMat( 1, num.length() - 1);
+                std::cout << x << ' ';
+            }
+        }
+        if(num.getMat( 1, num.length()) != 0)
+            std::cout << '+' << ' ' << num.getMat( 1, num.length()) << '\n';
+
+        for(int i = 0; i < maxSize; i++)
+            std::cout << '-' << '-' << '-' << '-' << '-';
+        std::cout << '\n';
+
+        if(den.length() >= 2)
+        {
+            for(int i = 0; i < den.length() - 2; i++)
+            {
+                if(den.getMat( 1, i+1) != 0)
+                {
+                    if(den.getMat( 1, i+1) != 1)
+                        std::cout << den.getMat( 1, i+1);
+                    std::cout << x << '^' << den.length() - i - 1 << ' ';
+                    if(i != den.length() - 3)
+                       std::cout << '+' << ' ';
+                }
+            }
+            if(den.getMat( 1, den.length() - 1)  != 0)
+            {
+                if(den.getMat( 1, den.length() - 1)  != 1)
+                   std::cout << '+' << ' ' << den.getMat( 1, den.length() - 1);
+                std::cout << x << ' ';
+            }
+        }
+       if(den.getMat( 1, den.length())  != 0)
+           std::cout << '+' << ' ' << den.getMat( 1, den.length()) ;
+    }
+    std::cout << '\n';
+}
+
+void EqdifSim::print()
+{
+    int a  = this->typeModel.find("SS");
+    if (a != -1)
+        this->printSS();
+    else
+        this->printTF();
 }
 
 void EqdifSim::tf2ssc()
@@ -193,16 +318,57 @@ void EqdifSim::ss2tfc()
 
     Temp = this->A - (this->B*this->C);
     this->Num = Temp.pol();
+    Num.print();
     this->Den = this->A.pol();
+    Den.print();
 }
 
 void EqdifSim::ss2tfd()
 {
-    Matrix Temp;
+    Matrix Temp, I;
 
-    Temp = this->Ad - (this->Bd*this->Cd);
+    I.eye(this->Ad.getRows());
+
+    Temp = this->A - (this->Bd*this->Cd);
     this->Numd = Temp.pol();
-    this->Dend = this->Ad.pol();
+    Numd.print();
+    Dend.print();
+//      Temp = this->Cd*((I - this->Ad)^-1)*this->Bd + this->Dd;
+//      Temp.print();
+}
+
+
+Matrix EqdifSim::sumPoly()
+{
+        Matrix ret;
+        unsigned int maxNum, difNum;
+
+        if(vNumSize1 > vNumSize2) {
+            difNum = vNumSize1 - vNumSize2;
+            maxNum = vNumSize1;
+            ret = (double*)calloc(vNumSize1, sizeof(double));
+            for(unsigned int i = 0; i < maxNum; i++) {
+                if(i >= difNum)
+                    ret[i] = vNum2[i - difNum] + vNum1[i];
+                else
+                    ret[i] = vNum1[i];
+//              ret.print();
+            }
+        }
+        else {
+            difNum = vNumSize2 - vNumSize1;
+//          std::cout << difNum;
+            maxNum = vNumSize2;
+            ret = (double*)calloc(vNumSize2, sizeof(double));
+            for(unsigned int i = 0; i < maxNum; i++) {
+                if(i >= difNum)
+                    ret[i] = vNum2[i] + vNum1[i - difNum];
+                else
+                    ret[i] = vNum2[i];
+//              ret.print();
+            }
+        }
+        return ret;
 }
 
 float EqdifSim::factorial(float n)

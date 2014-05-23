@@ -13,7 +13,7 @@ private:
     void tf2ssd();
     void ss2tfc();
     void ss2tfd();
-
+    Matrix sumPoly();
 public:
     EqdifSim();
     EqdifSim(Matrix AIn, Matrix BIn, Matrix CIn, Matrix DIn);
@@ -25,10 +25,12 @@ public:
 
     void printSS();
     void printTF();
+    void print();
     void c2d(float Time);
     void d2c();
 
     float factorial(float n);
+
 };
 
 #endif // EQDIFSIM_H
