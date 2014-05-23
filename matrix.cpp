@@ -295,7 +295,7 @@ Matrix Matrix::operator *(Matrix Mat1)//Operador de Multiplicação Matriz Matri
 
     try
     {
-        if (!this->sqr(*this))
+        if (this->cols != Mat1.rows)
         {
             throw "As dimensoes das matrizes nao batem, a multiplicacao nao e possivel";
             Ret.zeros(this->rows, Mat1.cols);
@@ -304,7 +304,7 @@ Matrix Matrix::operator *(Matrix Mat1)//Operador de Multiplicação Matriz Matri
         {
             for(int i = 0; i < this->rows; i++)
             {
-                for (int col = 0; col < this->cols; col++)
+                for (int col = 0; col < Mat1.cols; col++)
                 {
                     temp = 0;
                     for (int j = 0; j < this->cols; j++)
@@ -503,7 +503,7 @@ Matrix Matrix::inv()//Encontra a Matriz Inversa.
     return Id;
 }
 
-Matrix Matrix::pol()//Encontra os Índices do Polinô,io Característico
+Matrix Matrix::pol()//Encontra os Índices do Polinômio Característico
 {
     Matrix A = *this, B, I, C, ind(1, this->cols + 1);
     int sinal;
@@ -532,10 +532,7 @@ Matrix Matrix::pol()//Encontra os Índices do Polinô,io Característico
     catch (const char* msg)
     {
          cerr<<msg<<endl;
-    }
-
-    cout<<"Os indices do polinomio sao: "<<endl;
-    ind.print();
+    }    
 
     return ind;
 }
@@ -651,6 +648,41 @@ int Matrix::getCols()//Retorna o numéro de colunas de uma Matriz.
 
 float Matrix::getMat(int row, int col)//Retorna o valor do elemento no índice ij.
 {
-    return this->Mat[row][col];
+    return this->Mat[row-1][col-1];
 }
 //#####Fim Funções de Retorno de Informações da Matriz#####//
+
+float max(Matrix M)
+{
+     float  maximum = M.Mat[0][0];
+
+     for(int i = 0; i < M.rows; i++)
+       for(int j = 0; j < M.cols; j++)
+         if(maximum < M.Mat[i][j])
+           maximum = M.Mat[i][j];
+
+     return maximum;
+}
+
+Matrix abs(Matrix M)
+{
+    Matrix ret = M;
+    for(  int i = 0; i < M.rows; i++)
+        for(  int j = 0; j < M.cols; j++)
+            if (ret.Mat[i][j] < 0)
+                ret.Mat[i][j] = -ret.Mat[i][j];
+
+    return ret;
+}
+
+int Matrix::length()
+{
+    int tam;
+
+    if(this->rows > this->cols)
+        tam = this->rows;
+    else
+        tam = this->cols;
+
+    return tam;
+}

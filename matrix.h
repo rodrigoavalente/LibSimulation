@@ -2,7 +2,7 @@
 #define MATRIX_H
 #include <string>
 #include <sstream>
-#include <math.h>
+#include <cmath>
 #include <iostream>
 #include <fstream>
 
@@ -102,6 +102,11 @@ public:
     int getCols();//Retorna o número de colunas da matriz.
     float getMat(int row, int col);//Retorna o elemento no índice ij da matriz.
     //#######################################################//
+
+    friend float max(Matrix M);
+    friend Matrix abs(Matrix M);
+
+    int length();
 };
 
 #endif // MATRIX_H
