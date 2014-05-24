@@ -651,6 +651,7 @@ float Matrix::getMat(int row, int col)//Retorna o valor do elemento no índice i
     return this->Mat[row-1][col-1];
 }
 //#####Fim Funções de Retorno de Informações da Matriz#####//
+//-----Funções Auxiliares para biblioteca de matrizes------//
 
 float max(Matrix M)
 {
@@ -662,6 +663,19 @@ float max(Matrix M)
            maximum = M.Mat[i][j];
 
      return maximum;
+}
+
+float min(Matrix M)
+{
+  float  minimun;
+  minimun = M.Mat[0][0];
+
+  for(int i = 0; i < M.rows; i++)
+    for(int j = 0; j < M.cols; j++)
+      if(minimun > M.Mat[i][j])
+        minimun = M.Mat[i][j];
+
+  return minimun;
 }
 
 Matrix abs(Matrix M)
@@ -686,3 +700,230 @@ int Matrix::length()
 
     return tam;
 }
+
+//-----------------------------------------------------//
+void Matrix::randU(int row, int col)
+{
+    float t;
+    srand (time(NULL));
+    this->init(row, col);
+    for(int i = 0; i < this->rows; i++)
+        for(int j = 0; j < this->cols; j++)
+        {
+            t = rand();
+            this->Mat[i][j] = (float)(t)/RAND_MAX;
+        }
+}
+
+Matrix cos(Matrix M1)
+{
+    Matrix ret = M1;
+    for(  int i = 0; i < M1.getRows(); i++)
+        for(  int j = 0; j < M1.getCols(); j++)
+            ret.add(i+1, j+1, cos(M1.getMat(i+1,j+1)));
+
+    return ret;
+
+}
+
+Matrix sin(Matrix M1)
+{
+    Matrix ret = M1;
+    for(  int i = 0; i < M1.getRows(); i++)
+        for(  int j = 0; j < M1.getCols(); j++)
+            ret.add(i+1, j+1, sin(M1.getMat(i+1,j+1)));
+
+    return ret;
+}
+
+Matrix tan(Matrix M1)
+{
+    Matrix ret = M1;
+    for(  int i = 0; i < M1.getRows(); i++)
+        for(  int j = 0; j < M1.getCols(); j++)
+            ret.add(i+1, j+1, tan(M1.getMat(i+1,j+1)));
+
+    return ret;
+
+}
+
+Matrix acos(Matrix M1)
+{
+    Matrix ret = M1;
+    for(  int i = 0; i < M1.getRows(); i++)
+        for(  int j = 0; j < M1.getCols(); j++)
+            ret.add(i+1, j+1, acos(M1.getMat(i+1,j+1)));
+
+    return ret;
+
+
+}
+
+Matrix asin(Matrix M1)
+{
+    Matrix ret = M1;
+    for(  int i = 0; i < M1.getRows(); i++)
+        for(  int j = 0; j < M1.getCols(); j++)
+            ret.add(i+1, j+1, asin(M1.getMat(i+1,j+1)));
+
+    return ret;
+
+
+}
+
+Matrix atan(Matrix M1)
+{
+    Matrix ret = M1;
+    for(  int i = 0; i < M1.getRows(); i++)
+        for(  int j = 0; j < M1.getCols(); j++)
+            ret.add(i+1, j+1, atan(M1.getMat(i+1,j+1)));
+
+    return ret;
+
+}
+
+Matrix cosh(Matrix M1)
+{
+    Matrix ret = M1;
+    for(  int i = 0; i < M1.getRows(); i++)
+        for(  int j = 0; j < M1.getCols(); j++)
+            ret.add(i+1, j+1, cosh(M1.getMat(i+1,j+1)));
+
+    return ret;
+
+}
+
+Matrix sinh(Matrix M1)
+{
+    Matrix ret = M1;
+    for(  int i = 0; i < M1.getRows(); i++)
+        for(  int j = 0; j < M1.getCols(); j++)
+            ret.add(i+1, j+1, sinh(M1.getMat(i+1,j+1)));
+
+    return ret;
+
+
+}
+
+Matrix tanh(Matrix M1)
+{
+    Matrix ret = M1;
+    for(  int i = 0; i < M1.getRows(); i++)
+        for(  int j = 0; j < M1.getCols(); j++)
+            ret.add(i+1, j+1, tanh(M1.getMat(i+1,j+1)));
+
+    return ret;
+
+
+}
+
+Matrix acosh(Matrix M1)
+{
+    Matrix ret = M1;
+    for(  int i = 0; i < M1.getRows(); i++)
+        for(  int j = 0; j < M1.getCols(); j++)
+            ret.add(i+1, j+1, acosh(M1.getMat(i+1,j+1)));
+
+    return ret;
+
+
+}
+
+Matrix asinh(Matrix M1)
+{
+    Matrix ret = M1;
+    for(  int i = 0; i < M1.getRows(); i++)
+        for(  int j = 0; j < M1.getCols(); j++)
+            ret.add(i+1, j+1, asinh(M1.getMat(i+1,j+1)));
+
+    return ret;
+
+
+}
+
+Matrix atanh(Matrix M1)
+{
+    Matrix ret = M1;
+    for(  int i = 0; i < M1.getRows(); i++)
+        for(  int j = 0; j < M1.getCols(); j++)
+            ret.add(i+1, j+1, atanh(M1.getMat(i+1,j+1)));
+
+    return ret;
+
+}
+
+Matrix exp(Matrix M1)
+{
+    Matrix ret = M1;
+    for(  int i = 0; i < M1.getRows(); i++)
+        for(  int j = 0; j < M1.getCols(); j++)
+            ret.add(i+1, j+1, exp(M1.getMat(i+1,j+1)));
+
+    return ret;
+
+
+}
+
+Matrix log(Matrix M1)
+{
+    Matrix ret = M1;
+    for(  int i = 0; i < M1.getRows(); i++)
+        for(  int j = 0; j < M1.getCols(); j++)
+            ret.add(i+1, j+1, log(M1.getMat(i+1,j+1)));
+
+    return ret;
+
+
+}
+
+Matrix log10(Matrix M1)
+{
+    Matrix ret = M1;
+    for(  int i = 0; i < M1.getRows(); i++)
+        for(  int j = 0; j < M1.getCols(); j++)
+            ret.add(i+1, j+1, log10(M1.getMat(i+1,j+1)));
+
+    return ret;
+
+
+}
+
+Matrix ceil(Matrix M1)
+{
+    Matrix ret = M1;
+    for(  int i = 0; i < M1.getRows(); i++)
+        for(  int j = 0; j < M1.getCols(); j++)
+            ret.add(i+1, j+1, ceil(M1.getMat(i+1,j+1)));
+
+    return ret;
+
+
+}
+
+Matrix floor(Matrix M1)
+{
+    Matrix ret = M1;
+    for(  int i = 0; i < M1.getRows(); i++)
+        for(  int j = 0; j < M1.getCols(); j++)
+            ret.add(i+1, j+1, floor(M1.getMat(i+1,j+1)));
+
+    return ret;
+}
+
+Matrix round(Matrix M1)
+{
+    Matrix ret = M1;
+    for(  int i = 0; i < M1.getRows(); i++)
+        for(  int j = 0; j < M1.getCols(); j++)
+            ret.add(i+1, j+1, round(M1.getMat(i+1,j+1)));
+
+    return ret;
+}
+
+
+
+
+
+
+
+
