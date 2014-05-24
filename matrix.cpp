@@ -2,20 +2,9 @@
 #include <cstdlib>
 #include <iostream>
 
+//#####Início Verificação de tipos de Matrizes#####//
 
-
-Matrix::Matrix() //Inicializa linhas e colunas com zero
-{
-    this->rows = 0;
-    this->cols = 0;
-}
-
-Matrix::Matrix(int row, int col)//Inicializa a Matriz com as linhas e colunas determinadas
-{
-    this->init(row, col);
-}
-
-bool Matrix::sqr(Matrix Mat1)
+bool Matrix::sqr(Matrix Mat1)//Verifica se a matriz é quadrada.
 {
     bool vef;
 
@@ -27,21 +16,22 @@ bool Matrix::sqr(Matrix Mat1)
     return vef;
 }
 
-bool Matrix::ind(Matrix Mat1)
+bool Matrix::ind(Matrix Mat1)//Verifica se a matriz é identidade.
 {
     bool vef;
     int x = 0, a = 0, b = 0;
 
-    for (int i = 0; i < Mat1.rows; i ++)
-        for(int j = 0; j < Mat1.rows; j++)
-            if ((i == j) && (Mat1.Mat[i][j]) == 1)
+    for (int i = 0; i < Mat1.rows; i ++)//Neste for o valor de x
+        for(int j = 0; j < Mat1.rows; j++)//será igual a quantidade 1
+            if ((i == j) && (Mat1.Mat[i][j]) == 1)//que se encontram na diagonal principal da matriz.
                 x++;
-    for(int i = 0; i < Mat1.rows; i++ )
-        for(int j = i+1; j < Mat1.cols; j++)
-        {
-            if (Mat1.Mat[i][j] != 0)
-            {
+    for(int i = 0; i < Mat1.rows; i++ )//Este for navega pelos elementos
+        for(int j = i+1; j < Mat1.cols; j++)//acima da diagonal principal
+        {                                   //verificando se algum deles for diferente de 0
+            if (Mat1.Mat[i][j] != 0)        //se algum número for diferente de 0, o for é quebrado.
+            {                               //Caso não a é incrementado.
                 i = Mat1.rows + 1;
+                a = -1;
                 break;
             }
             else
@@ -49,26 +39,40 @@ bool Matrix::ind(Matrix Mat1)
         }
 
 
-    for(int i = 0; i < Mat1.rows; i++ )
-        for(int j = i+1; j < Mat1.cols; j++)
-        {
-            if (Mat1.Mat[j][i] != 0)
-            {
+    for(int i = 0; i < Mat1.rows; i++ )//Este for navega pelos elementos
+        for(int j = i+1; j < Mat1.cols; j++)//abaixo da diagonal principal
+        {                                   //verificando se algum deles for diferente de 0
+            if (Mat1.Mat[j][i] != 0)        //se algum número for diferente de 0, o for é quebrado.
+            {                                //Caso não b é incrementado.
                 i = Mat1.rows +1;
+                b = -1;
                 break;
             }
             else
                 b++;
         }
 
-    if (x == (Mat1.rows) && (a != 0) && (b != 0))
-        vef = true;
-    else
+    if (x == (Mat1.rows) && (a != -1) && (b != -1))//Verifica se x possui o mesmo valor
+        vef = true;                                //das linhas da matriz, e se foi encontrado
+    else                                           //elementos diferente de 0 acima ou abaixo da diagonal principal.
         vef = false;
 
     return vef;
 }
+//#####Fim Verificação de tipos de Matrizes#####//
 
+//#####Início Construtores e Destrutores da Classe#####//
+
+Matrix::Matrix() //Inicializa linhas e colunas com zero
+{
+    this->rows = 0;
+    this->cols = 0;
+}
+
+Matrix::Matrix(int row, int col)//Inicializa a Matriz com as linhas e colunas determinadas.
+{
+    this->init(row, col);
+}
 
 Matrix::Matrix(const Matrix & otherMatrix)//Cria uma cópia da Matriz
 {
@@ -80,16 +84,24 @@ Matrix::Matrix(const Matrix & otherMatrix)//Cria uma cópia da Matriz
 
 Matrix::~Matrix()//Destrutor da Classe Matriz
 {
-    for (int i = 0; i < this->rows; i++)
+    if ((this->rows != 0) && (this->cols != 0))
     {
-        free(this->Mat[i]);
-        this->Mat[i] = NULL;
+        for (int i = 0; i < this->rows; i++)
+        {
+            free(this->Mat[i]);
+            this->Mat[i] = NULL;
+        }
+        free(this->Mat);
+        this->rows = 0;
+        this->cols = 0;
+        this->Mat = NULL;
     }
-    free(this->Mat);
-    this->rows = 0;
-    this->cols = 0;
-    this->Mat = NULL;
+
+
 }
+//#####Fim Construtores e Destrutores da Classe#####//
+
+//#####Início Métodos de Inicialização de Matrizes#####//
 
 void Matrix::init(int row, int col)//Aloca o espaço de memória para a Matriz e inicializa com 0
 {
@@ -98,7 +110,6 @@ void Matrix::init(int row, int col)//Aloca o espaço de memória para a Matriz e
         this->Mat[i] = (float*)calloc(row,(col)*sizeof(float)); //Cria as colunas
     this->rows = row;
     this->cols = col;
-
 }
 
 void Matrix::init(string value)//Inicializa a Matriz com uma cadeia de strings como entrada
@@ -134,9 +145,9 @@ void Matrix::init(string value)//Inicializa a Matriz com uma cadeia de strings c
     }
 }
 
-void Matrix::add(int row, int col, float number)//Adiciona valores a matriz, se tiver valores maiores as dimensões coloca na posição indicada completando com 0
-{
-    int tempRow, tempCol;
+void Matrix::add(int row, int col, float number)//Adiciona valores a matriz,
+{                                               //se tiver valores maiores que as dimensões da matriz,
+    int tempRow, tempCol;                       //coloca o valor na posição indicada completando o resto com 0
 
     if(this->rows < row)
         tempRow = row;
@@ -174,7 +185,14 @@ void Matrix::eye(int num)//Gera uma Matriz Identidade, entrando como parâmetro 
 
 }
 
-void Matrix::zeros(int row, int col)
+void Matrix::ones(int row, int col)//Cria uma matriz preenchida com 1s.
+{
+    for (int i = 0; i < row; i++)
+        for (int j = 0; j < col; j++)
+            this->Mat[i][j] = 1;
+}
+
+void Matrix::zeros(int row, int col)//Gera uma Matriz de Zeros, tendo como entrada as dimensões indicadas.
 {
     this->init(row, col);
 }
@@ -190,6 +208,11 @@ void Matrix::print()//Imprime a Matriz na Tela
     }
 }
 
+//#####Fim Métodos de Inicialização de Matrizes#####//
+
+//#####Início Sobrecarga de Operadores#####//
+
+//-----Início Operadores de Soma-----//
 Matrix Matrix::operator +(Matrix Mat1)//Operador de soma Matriz Matriz
 {
     Matrix Ret(this->rows, this->cols);
@@ -216,7 +239,9 @@ Matrix operator+(float a, Matrix Mat1)//Operador de soma Matriz Escalar
 {
     return Mat1+a;
 }
+//-----Fim Operadores de Soma-----//
 
+//-----Início Operadores de Subtração-----//
 Matrix Matrix::operator -(Matrix Mat1)//Operador de subtração Matriz Matriz
 {
     Matrix Ret(this->rows, this->cols);
@@ -243,7 +268,9 @@ Matrix operator-(float a, Matrix Mat1)//Operador de subtração Matriz Escalar
 {
     return Mat1-a;
 }
+//-----Fim Operadores de Subtração-----//
 
+//-----Início Operadores de Igualdade-----//
 void Matrix::operator =(Matrix Mat1)//Operador de Igualdade entre Matrizes
 {
    this->init(Mat1.rows, Mat1.cols);
@@ -257,7 +284,9 @@ void Matrix::operator=(string value)//Operador para a entrada de uma String
 {
     this->init(value);
 }
+//-----Fim Operadores de Igualdade-----//
 
+//-----Início Operadores de Multplicação-----//
 Matrix Matrix::operator *(Matrix Mat1)//Operador de Multiplicação Matriz Matriz
 {
 
@@ -266,7 +295,7 @@ Matrix Matrix::operator *(Matrix Mat1)//Operador de Multiplicação Matriz Matri
 
     try
     {
-        if (!this->sqr(*this))
+        if (this->cols != Mat1.rows)
         {
             throw "As dimensoes das matrizes nao batem, a multiplicacao nao e possivel";
             Ret.zeros(this->rows, Mat1.cols);
@@ -275,7 +304,7 @@ Matrix Matrix::operator *(Matrix Mat1)//Operador de Multiplicação Matriz Matri
         {
             for(int i = 0; i < this->rows; i++)
             {
-                for (int col = 0; col < this->cols; col++)
+                for (int col = 0; col < Mat1.cols; col++)
                 {
                     temp = 0;
                     for (int j = 0; j < this->cols; j++)
@@ -309,7 +338,9 @@ Matrix operator*(float a, Matrix Mat1)//Operador de multiplicação Matriz Escal
 {
     return Mat1*a;
 }
+//-----Fim Operadores de Multiplicação-----//
 
+//-----Início Operadores de Concatenação Matrizes-----//
 Matrix Matrix::operator|(Matrix Mat1)//Concatenção de Matrizes a Esquerda
 {
     Matrix temp(this->rows,this->cols+Mat1.cols);
@@ -339,7 +370,9 @@ Matrix Matrix::operator||(Matrix Mat1)//Concatenação de Matrizes Abaixo
     return temp;
 
 }
+//-----Fim Operadores de Concatenação Matrizes-----//
 
+//----Início Operador de Matriz Transposta-----//
 Matrix Matrix::operator~()//Faz a transporta da Matriz
 {
     Matrix temp = *this, Ret (this->rows, this->cols);
@@ -349,7 +382,9 @@ Matrix Matrix::operator~()//Faz a transporta da Matriz
 
     return Ret;
 }
+//----Fim Operador de Matriz Transposta-----//
 
+//-----Início Operador de Potência de Matrizes-----//
 Matrix Matrix::operator^(float exp)
 {
     Matrix Ret, temp = *this;
@@ -373,24 +408,44 @@ Matrix Matrix::operator^(float exp)
     return Ret;
 }
 
-
-void Matrix::testemetods()
+Matrix Matrix::operator >(float num)//Eleva os elementos da Matriz a um determinado expoente
 {
-    try
-    {
-        if (!this->ind(*this))
-            throw "A matriz nao identidade";
-        else
-            throw "A matriz e identidade";
+    Matrix Ret = *this;
 
-    }
-    catch (const char* msg)
-    {
+    for(int i = 0; i < Ret.rows; i++)
+        for(int j = 0; j < Ret.cols; j++)
+            Ret.Mat[i][j] = pow(this->Mat[i][j],num);
+
+    return Ret;
+}
+//-----Fim Operador de Potência de Matrizes-----//
+
+//#####Fim Sobrecarga de Operadores#####//
+
+//#####Início Álgebra Linear#####//
+float Matrix::trace()//Cálcula o Traço da Matriz
+{
+   float traco = 0;
+
+   try
+   {
+        if(!this->sqr(*this))
+            throw "A matrix nao e quadrada";
+        else
+            for(int i = 0; i < this->rows; i++ )
+                for(int j = 0; j < this->cols; j++)
+                    if( i == j)
+                        traco = traco + this->Mat[i][j];
+   }
+   catch (const char* msg)
+   {
         cerr<<msg<<endl;
-    }
+   }
+
+    return traco;
 }
 
-Matrix Matrix::inv()
+Matrix Matrix::inv()//Encontra a Matriz Inversa.
 {
     Matrix Ret =*this, Id;
 
@@ -445,34 +500,10 @@ Matrix Matrix::inv()
         cerr<<msg<<endl;
     }
 
-
-
     return Id;
 }
 
-float Matrix::trace()
-{
-   float traco = 0;
-
-   try
-   {
-        if(!this->sqr(*this))
-            throw "A matrix nao e quadrada";
-        else
-            for(int i = 0; i < this->rows; i++ )
-                for(int j = 0; j < this->cols; j++)
-                    if( i == j)
-                        traco = traco + this->Mat[i][j];
-   }
-   catch (const char* msg)
-   {
-        cerr<<msg<<endl;
-   }
-
-    return traco;
-}
-
-Matrix Matrix::pol()
+Matrix Matrix::pol()//Encontra os Índices do Polinômio Característico
 {
     Matrix A = *this, B, I, C, ind(1, this->cols + 1);
     int sinal;
@@ -501,16 +532,12 @@ Matrix Matrix::pol()
     catch (const char* msg)
     {
          cerr<<msg<<endl;
-    }
-
-    cout<<"Os indices do polinomio sao: "<<endl;
-    ind.print();
+    }    
 
     return ind;
-
 }
 
-Matrix Matrix::eigenvalues()
+Matrix Matrix::eigenvalues()//Encontra os Auto Valores da Matriz.
 {
     Matrix autovlr(1, this->rows);
 
@@ -555,10 +582,6 @@ Matrix Matrix::eigenvalues()
                        for(int j = 0; j< this->rows; j++)
                            if (i == j)
                                 autovlr.Mat[0][i] = A.Mat[i][j];
-
-
-
-
        }
             else
                for(int i = 0; i < this->rows; i++ )
@@ -574,7 +597,7 @@ Matrix Matrix::eigenvalues()
     return autovlr;
 }
 
-float Matrix::det()
+float Matrix::det()//Encontra o determinante da Matriz.
 {
     float x = 1;
     Matrix A;
@@ -599,16 +622,67 @@ float Matrix::det()
     }
 
     return x;
-
-
 }
 
-int Matrix::getRows()
+Matrix diff(Matrix M, float h)//Encontra a derivada de uma Matriz
+{
+    Matrix Ret;
+    for(int i = 0; i < M.rows-1; i++)
+        for(int j = 0; j < M.cols; j++)
+            Ret.add(i+1,j+1,(M.Mat[i+1][j] - M.Mat[i][j])/h);
+
+    return Ret;
+}
+//#####Fim Álgebra Linear#####//
+
+//#####Início Funções de Retorno de Informações da Matriz#####//
+int Matrix::getRows()//Retorna o numéro de linhas de uma Matriz.
 {
 	return this->rows;
 }
 
-int Matrix::getCols()
+int Matrix::getCols()//Retorna o numéro de colunas de uma Matriz.
 {
 	return this->cols;
+}
+
+float Matrix::getMat(int row, int col)//Retorna o valor do elemento no índice ij.
+{
+    return this->Mat[row-1][col-1];
+}
+//#####Fim Funções de Retorno de Informações da Matriz#####//
+
+float max(Matrix M)
+{
+     float  maximum = M.Mat[0][0];
+
+     for(int i = 0; i < M.rows; i++)
+       for(int j = 0; j < M.cols; j++)
+         if(maximum < M.Mat[i][j])
+           maximum = M.Mat[i][j];
+
+     return maximum;
+}
+
+Matrix abs(Matrix M)
+{
+    Matrix ret = M;
+    for(  int i = 0; i < M.rows; i++)
+        for(  int j = 0; j < M.cols; j++)
+            if (ret.Mat[i][j] < 0)
+                ret.Mat[i][j] = -ret.Mat[i][j];
+
+    return ret;
+}
+
+int Matrix::length()
+{
+    int tam;
+
+    if(this->rows > this->cols)
+        tam = this->rows;
+    else
+        tam = this->cols;
+
+    return tam;
 }
