@@ -5,6 +5,9 @@
 #include <cmath>
 #include <iostream>
 #include <fstream>
+#include <ctime>
+#include <cstdlib>
+#define pi 3.14
 
 using namespace std;
 
@@ -39,6 +42,7 @@ public:
     void eye(int num);//Cria uma matriz identidade de ordem num.
     void ones(int row, int col);//Inicia uma matriz com todos os índices iguais a 1, de acordo com o número de linhas e colunas respectivamente.
     void zeros(int row, int col);//Inicia uma matriz com todos os índices iguais a 0, de acordo com o número de linhas e colunas, respectivamente.
+
     //###########################################//
 
     //#####Método de Impressão da Matriz#####//
@@ -104,7 +108,27 @@ public:
     //#######################################################//
 
     friend float max(Matrix M);
+    friend float min(Matrix M);
     friend Matrix abs(Matrix M);
+    friend Matrix cos(Matrix M1);
+    friend Matrix sin(Matrix M1);
+    friend Matrix tan(Matrix M1);
+    friend Matrix acos(Matrix M1);
+    friend Matrix asin(Matrix M1);
+    friend Matrix atan(Matrix M1);
+    friend Matrix cosh(Matrix M1);
+    friend Matrix sinh(Matrix M1);
+    friend Matrix tanh(Matrix M1);
+    friend Matrix acosh(Matrix M1);
+    friend Matrix asinh(Matrix M1);
+    friend Matrix atanh(Matrix M1);
+    friend Matrix exp(Matrix M1);
+    friend Matrix log(Matrix M1);
+    friend Matrix log10(Matrix M1);
+    friend Matrix ceil(Matrix M1);
+    friend Matrix round(Matrix M1);
+    friend Matrix floor(Matrix M1);
+    void randU(int row, int col);
 
     int length();
 };
