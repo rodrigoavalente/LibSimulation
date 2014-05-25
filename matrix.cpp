@@ -67,11 +67,23 @@ Matrix::Matrix() //Inicializa linhas e colunas com zero
 {
     this->rows = 0;
     this->cols = 0;
+    this->MatOriginalRows = 0;
+    this->MatOriginalCols = 0;
+    this->vet1Rows = 0;
+    this->vet1Cols = 0;
+    this->vet2Rows = 0;
+    this->vet2Cols = 0;
 }
 
 Matrix::Matrix(int row, int col)//Inicializa a Matriz com as linhas e colunas determinadas.
 {
     this->init(row, col);
+    this->MatOriginalRows = 0;
+    this->MatOriginalCols = 0;
+    this->vet1Rows = 0;
+    this->vet1Cols = 0;
+    this->vet2Rows = 0;
+    this->vet2Cols = 0;
 }
 
 Matrix::Matrix(const Matrix & otherMatrix)//Cria uma cópia da Matriz
@@ -80,6 +92,22 @@ Matrix::Matrix(const Matrix & otherMatrix)//Cria uma cópia da Matriz
     for (int i = 0; i < this->rows; i++)
         for (int j = 0; j < this->cols; j++)
             this->Mat[i][j] = otherMatrix.Mat[i][j];
+
+    this->initMatOriginal(otherMatrix.MatOriginalRows, otherMatrix.MatOriginalCols);
+    for (int i = 0; i < this->MatOriginalRows; i++)
+        for (int j = 0; j < this->MatOriginalCols; j++)
+            this->MatOriginal[i][j] = otherMatrix.MatOriginal[i][j];
+
+    this->initVet1(otherMatrix.vet1Rows, otherMatrix.vet1Cols);
+    for (int i = 0; i < this->vet1Rows; i++)
+        for (int j = 0; j < this->vet1Cols; j++)
+            this->vet1[i][j] = otherMatrix.vet1[i][j];
+
+    this->initVet2(otherMatrix.vet2Rows, otherMatrix.vet2Cols);
+    for (int i = 0; i < this->vet2Rows; i++)
+        for (int j = 0; j < this->vet2Cols; j++)
+            this->vet2[i][j] = otherMatrix.vet2[i][j];
+
 }
 
 Matrix::~Matrix()//Destrutor da Classe Matriz
@@ -97,6 +125,45 @@ Matrix::~Matrix()//Destrutor da Classe Matriz
         this->Mat = NULL;
     }
 
+    if ((this->MatOriginalRows != 0) && (this->MatOriginalCols != 0))
+    {
+        for (int i = 0; i < this->MatOriginalRows; i++)
+        {
+            free(this->MatOriginal[i]);
+            this->MatOriginal[i] = NULL;
+        }
+        free(this->MatOriginal);
+        this->MatOriginalRows = 0;
+        this->MatOriginalCols = 0;
+        this->MatOriginal = NULL;
+    }
+
+    if ((this->vet1Rows != 0) && (this->vet1Cols != 0))
+    {
+        for (int i = 0; i < this->vet1Rows; i++)
+        {
+            free(this->vet1[i]);
+            this->vet1[i] = NULL;
+        }
+        free(this->vet1);
+        this->vet1Rows = 0;
+        this->vet1Cols = 0;
+        this->vet1 = NULL;
+    }
+
+    if ((this->vet2Rows != 0) && (this->vet2Cols != 0))
+    {
+        for (int i = 0; i < this->vet2Rows; i++)
+        {
+            free(this->vet2[i]);
+            this->vet2[i] = NULL;
+        }
+        free(this->vet2);
+        this->vet2Rows = 0;
+        this->vet2Cols = 0;
+        this->vet2 = NULL;
+    }
+
 
 }
 //#####Fim Construtores e Destrutores da Classe#####//
@@ -110,6 +177,33 @@ void Matrix::init(int row, int col)//Aloca o espaço de memória para a Matriz e
         this->Mat[i] = (float*)calloc(row,(col)*sizeof(float)); //Cria as colunas
     this->rows = row;
     this->cols = col;
+}
+
+void Matrix::initMatOriginal(int row, int col)
+{
+    this->MatOriginal = (float**)calloc(col,(row)*sizeof(float*)); //Cria as linhas
+    for (int i = 0; i < row; i++)
+        this->MatOriginal[i] = (float*)calloc(row,(col)*sizeof(float)); //Cria as colunas
+    this->MatOriginalRows = row;
+    this->MatOriginalCols = col;
+}
+
+void Matrix::initVet1(int row, int col)
+{
+    this->vet1 = (float**)calloc(col,(row)*sizeof(float*)); //Cria as linhas
+    for (int i = 0; i < row; i++)
+        this->vet1[i] = (float*)calloc(row,(col)*sizeof(float)); //Cria as colunas
+    this->vet1Rows = row;
+    this->vet1Cols = col;
+}
+
+void Matrix::initVet2(int row, int col)
+{
+    this->vet2 = (float**)calloc(col,(row)*sizeof(float*)); //Cria as linhas
+    for (int i = 0; i < row; i++)
+        this->vet2[i] = (float*)calloc(row,(col)*sizeof(float)); //Cria as colunas
+    this->vet2Rows = row;
+    this->vet2Cols = col;
 }
 
 void Matrix::init(string value)//Inicializa a Matriz com uma cadeia de strings como entrada
@@ -208,6 +302,17 @@ void Matrix::print()//Imprime a Matriz na Tela
     }
 }
 
+//void Matrix::printMatOr()//Imprime a Matriz na Tela
+//{
+//    cout<<"\n";
+//    for (int i = 0; i< this->MatOriginalRows; i++)
+//    {
+//        for (int j = 0; j< this->MatOriginalCols; j++)
+//            cout<<this->MatOriginal[i][j]<<" ";
+//        cout<<endl;
+//    }
+//}
+
 //#####Fim Métodos de Inicialização de Matrizes#####//
 
 //#####Início Sobrecarga de Operadores#####//
@@ -271,13 +376,62 @@ Matrix operator-(float a, Matrix Mat1)//Operador de subtração Matriz Escalar
 //-----Fim Operadores de Subtração-----//
 
 //-----Início Operadores de Igualdade-----//
-void Matrix::operator =(Matrix Mat1)//Operador de Igualdade entre Matrizes
+void Matrix::operator= (Matrix Mat1)//Operador de Igualdade entre Matrizes
 {
-   this->init(Mat1.rows, Mat1.cols);
+    if( this->MatOriginalRows == 0)
+    {
+       this->init(Mat1.rows, Mat1.cols);
 
-   for(int i = 0; i < this->rows; i++)
-       for (int j = 0; j < this->cols; j++)
-           this->Mat[i][j] = Mat1.Mat[i][j];
+       for(int i = 0; i < this->rows; i++)
+           for (int j = 0; j < this->cols; j++)
+               this->Mat[i][j] = Mat1.Mat[i][j];
+    }
+    else if((Mat1.vet1Rows == 0 || this->vet1Rows == 0) || (Mat1.vet2Cols == 0 || this->vet2Cols == 0))
+    {
+        try
+        {
+            throw "As dimensoes das matrizes nao batem, atribuição nao e possivel";
+        }
+        catch(const char* msg)
+        {
+            cerr<<endl<<msg<<endl;
+        }
+    }
+    else
+    {
+        if (this->vet1Cols == Mat1.vet1Cols && this->vet2Cols == Mat1.vet2Cols )
+        {
+            for(int i = 0; i < this->vet1Cols; i++)
+                for (int j = 0; j < this->vet2Cols; j++)
+                {
+                    int rowTemp = (int) this->vet1[0][i] - 1;
+                    int colTemp = (int) this->vet2[0][j] - 1;
+                    this->MatOriginal[rowTemp][colTemp] = Mat1.Mat[i][j];
+                }
+
+            Matrix Temp(this->MatOriginalRows, this->MatOriginalCols);
+            for(int i = 0; i < Temp.rows; i++)
+                for (int j = 0; j < Temp.cols; j++)
+                    Temp.Mat[i][j] = this->MatOriginal[i][j];
+
+            this->init(Temp.rows,Temp.cols);
+            for(int i = 0; i < this->rows; i++)
+                for (int j = 0; j < this->cols; j++)
+                    this->Mat[i][j] = Temp.Mat[i][j];
+            this->print();
+        }
+        else
+        {
+            try
+            {
+                throw "As dimensoes das matrizes nao batem, atribuição nao e possivel";
+            }
+            catch(const char* msg)
+            {
+                cerr<<endl<<msg<<endl;
+            }
+        }
+    }
 }
 
 void Matrix::operator=(string value)//Operador para a entrada de uma String
@@ -665,6 +819,11 @@ float max(Matrix M)
      return maximum;
 }
 
+float Matrix::operator()(int row,int col)
+{
+    return this->getMat( row, col);
+}
+
 float min(Matrix M)
 {
   float  minimun;
@@ -677,6 +836,63 @@ float min(Matrix M)
 
   return minimun;
 }
+
+Matrix Matrix::operator() (Matrix M1,Matrix M2)
+{
+    float maxM1 = max(M1), maxM2 = max(M2), minM1 = min(M1), minM2 = min(M2);
+    Matrix Ret(maxM1, maxM2);
+    try
+    {
+        if (minM1 < 1 || minM2 < 1 || maxM1 > this->rows || maxM2 > this->cols)
+            throw "A matrix não é quadrada";
+        else
+        {
+            for(int i = 1; i <= M1.getCols(); i++)
+                for(int j = 1; j <= M2.getCols(); j++)
+                    Ret.add(i, j, this->Mat[(int)M1(1,i) - 1][(int)M2(1,j) - 1]);
+            Ret.initMatOriginal(this->rows, this->cols);
+            Ret.initVet1(M1.rows, M1.cols);
+            Ret.initVet2(M2.rows, M2.cols);
+
+            for(int i = 0; i < Ret.MatOriginalRows; i++)
+                for(int j = 0; j < Ret.MatOriginalCols; j++)
+                    Ret.MatOriginal[i][j] = this->Mat[i][j];
+
+            for(int i = 0; i < Ret.vet1Rows; i++)
+                for(int j = 0; j < Ret.vet1Cols; j++)
+                    Ret.vet1[i][j] = M1.Mat[i][j];
+
+            for(int i = 0; i < Ret.vet2Rows; i++)
+                for(int j = 0; j < Ret.vet2Cols; j++)
+                    Ret.vet2[i][j] = M2.Mat[i][j];
+        }
+    }
+    catch (const char* msg)
+    {
+        cerr<<msg<<endl;
+    }
+    *this = Ret;
+    return Ret;
+}
+
+void Matrix::lineVector(int left, int rigth)
+{
+    int j = 1;
+    if (left > rigth)
+        for(int i = left; i >= rigth; i--)
+        {
+            this->add(1,j, i);
+            j++;
+        }
+    else
+        for(int i = left; i <= rigth; i++)
+        {
+            this->add(1,j, i);
+            j++;
+        }
+}
+
+
 
 Matrix abs(Matrix M)
 {
@@ -919,6 +1135,10 @@ Matrix round(Matrix M1)
 
     return ret;
 }
+//double operator ^(double num1, double num2)
+//{
+//    return pow(num1,num2);
+//}
 
 
 
