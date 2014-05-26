@@ -438,6 +438,10 @@ void Matrix::operator=(string value)//Operador para a entrada de uma String
 {
     this->init(value);
 }
+
+
+
+
 //-----Fim Operadores de Igualdade-----//
 
 //-----Início Operadores de Multplicação-----//
@@ -824,6 +828,12 @@ float Matrix::operator()(int row,int col)
     return this->getMat( row, col);
 }
 
+void Matrix::operator ()(int row, int col, float value)
+{
+    this->add(row, col, value);
+}
+
+
 float min(Matrix M)
 {
   float  minimun;
@@ -874,6 +884,10 @@ Matrix Matrix::operator() (Matrix M1,Matrix M2)
     *this = Ret;
     return Ret;
 }
+
+
+
+
 
 void Matrix::lineVector(int left, int rigth)
 {
@@ -1135,6 +1149,7 @@ Matrix round(Matrix M1)
 
     return ret;
 }
+
 //double operator ^(double num1, double num2)
 //{
 //    return pow(num1,num2);
