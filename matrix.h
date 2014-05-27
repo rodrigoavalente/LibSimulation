@@ -14,6 +14,7 @@ using namespace std;
 class Matrix
 {
 private:
+    Matrix *Address;
     int rows, cols, MatOriginalRows, MatOriginalCols, vet1Rows, vet1Cols, vet2Rows, vet2Cols;
     float **Mat, **MatOriginal, **vet1, **vet2; //criei essa variável temprária para criar uma função que permita realizar a seguinte intrução A(vet1,vet2) = A(vet1,vet2)
     void initMatOriginal(int row, int col);
