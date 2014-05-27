@@ -69,6 +69,7 @@ public:
     //-----Operadores de Atribuição-----//
     void operator=(Matrix Mat1);//Igualando Matriz Matriz
     void operator=(string value);//Atribuindo String a Entrada da Matriz
+    void operator=(float B(int row, int col));
     //---------------------------------//
 
     //-----Operadores de Multiplicação-----//
@@ -90,6 +91,7 @@ public:
     Matrix operator^(float exp);//Eleva a matriz a um determinado expoente.
     Matrix operator> (float num);//Eleva os elementos de uma matriz a um determinado
     float operator() (int row,int col);//Acessa os elementos de uma matriz
+    void operator() (int row, int col, float value);
     Matrix operator() (Matrix M1,Matrix M2);//Acessa n elementos de uma matriz
     void lineVector(int left, int rigth);//Cria uma matriz elementos crescentes ou decrescentes de um em um de left até rigth
     //-----------------------------------------//
@@ -111,6 +113,7 @@ public:
     int getRows();//Retorna o número de linhas da matriz.
     int getCols();//Retorna o número de colunas da matriz.
     float getMat(int row, int col);//Retorna o elemento no índice ij da matriz.
+    void setMat(int row, int col, float num);
     //#######################################################//
 
     friend float max(Matrix M);//Retorna o maior valor de uma matriz
@@ -137,6 +140,7 @@ public:
 
     void randU(int row, int col);//Gera uma matriz contendo numeros aleatórios com distribuição uniforme
 //    friend double operator^ (double num1, double num2);
+
 
     int length();//Retorna o maior tamanho entre as linhas e colunas
 };
