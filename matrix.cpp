@@ -88,6 +88,7 @@ Matrix::Matrix(int row, int col)//Inicializa a Matriz com as linhas e colunas de
 
 Matrix::Matrix(const Matrix & otherMatrix)//Cria uma cópia da Matriz
 {
+
     this->init(otherMatrix.rows, otherMatrix.cols);
     for (int i = 0; i < this->rows; i++)
         for (int j = 0; j < this->cols; j++)
@@ -297,7 +298,10 @@ void Matrix::print()//Imprime a Matriz na Tela
     for (int i = 0; i< this->rows; i++)
     {
         for (int j = 0; j< this->cols; j++)
-            cout<<this->Mat[i][j]<<" ";
+        {
+            printf("%6.2f", this->Mat[i][j]);
+//            cout<<" ";
+        }
         cout<<endl;
     }
 }
@@ -383,7 +387,7 @@ void Matrix::operator= (Matrix Mat1)//Operador de Igualdade entre Matrizes
        this->init(Mat1.rows, Mat1.cols);
 
        for(int i = 0; i < this->rows; i++)
-           for (int j = 0; j < this->cols; j++)
+          for (int j = 0; j < this->cols; j++)
                this->Mat[i][j] = Mat1.Mat[i][j];
     }
     else if((Mat1.vet1Rows == 0 || this->vet1Rows == 0) || (Mat1.vet2Cols == 0 || this->vet2Cols == 0))
@@ -408,17 +412,17 @@ void Matrix::operator= (Matrix Mat1)//Operador de Igualdade entre Matrizes
                     int colTemp = (int) this->vet2[0][j] - 1;
                     this->MatOriginal[rowTemp][colTemp] = Mat1.Mat[i][j];
                 }
-
-            Matrix Temp(this->MatOriginalRows, this->MatOriginalCols);
+            Matrix Temp;
+            Temp.init(this->MatOriginalRows, this->MatOriginalCols);
             for(int i = 0; i < Temp.rows; i++)
                 for (int j = 0; j < Temp.cols; j++)
                     Temp.Mat[i][j] = this->MatOriginal[i][j];
 
-            this->init(Temp.rows,Temp.cols);
-            for(int i = 0; i < this->rows; i++)
-                for (int j = 0; j < this->cols; j++)
-                    this->Mat[i][j] = Temp.Mat[i][j];
-            this->print();
+            this->Address->init(Temp.rows,Temp.cols);
+            for(int i = 0; i < this->Address->rows; i++)
+                for (int j = 0; j < this->Address->cols; j++)
+                    this->Address->Mat[i][j] = Temp.Mat[i][j];
+//            this->Address->print();
         }
         else
         {
@@ -433,6 +437,7 @@ void Matrix::operator= (Matrix Mat1)//Operador de Igualdade entre Matrizes
         }
     }
 }
+
 
 void Matrix::operator=(string value)//Operador para a entrada de uma String
 {
@@ -881,7 +886,7 @@ Matrix Matrix::operator() (Matrix M1,Matrix M2)
     {
         cerr<<msg<<endl;
     }
-    *this = Ret;
+    Ret.Address = this;
     return Ret;
 }
 
