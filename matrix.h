@@ -50,7 +50,7 @@ public:
 
     //#####Método de Impressão da Matriz#####//
     void print();
-//    void printMatOr();
+    void printMatOr();
     //######################################//
 
     //#####Operadores da Matriz#####//
@@ -94,6 +94,7 @@ public:
     float operator() (int row,int col);//Acessa os elementos de uma matriz
     void operator() (int row, int col, float value);
     Matrix operator() (Matrix M1,Matrix M2);//Acessa n elementos de uma matriz
+    Matrix operator() (string M1,string M2);//Acessa n elementos de uma matriz
     void lineVector(int left, int rigth);//Cria uma matriz elementos crescentes ou decrescentes de um em um de left até rigth
     //-----------------------------------------//
 
