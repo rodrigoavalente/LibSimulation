@@ -306,16 +306,16 @@ void Matrix::print()//Imprime a Matriz na Tela
     }
 }
 
-//void Matrix::printMatOr()//Imprime a Matriz na Tela
-//{
-//    cout<<"\n";
-//    for (int i = 0; i< this->MatOriginalRows; i++)
-//    {
-//        for (int j = 0; j< this->MatOriginalCols; j++)
-//            cout<<this->MatOriginal[i][j]<<" ";
-//        cout<<endl;
-//    }
-//}
+void Matrix::printMatOr()//Imprime a Matriz na Tela
+{
+    cout<<"\n";
+    for (int i = 0; i< this->MatOriginalRows; i++)
+    {
+        for (int j = 0; j< this->MatOriginalCols; j++)
+            cout<<this->MatOriginal[i][j]<<" ";
+        cout<<endl;
+    }
+}
 
 //#####Fim Métodos de Inicialização de Matrizes#####//
 
@@ -384,11 +384,28 @@ void Matrix::operator= (Matrix Mat1)//Operador de Igualdade entre Matrizes
 {
     if( this->MatOriginalRows == 0)
     {
-       this->init(Mat1.rows, Mat1.cols);
+        this->init(Mat1.rows, Mat1.cols);
 
-       for(int i = 0; i < this->rows; i++)
-          for (int j = 0; j < this->cols; j++)
+        for(int i = 0; i < this->rows; i++)
+            for (int j = 0; j < this->cols; j++)
                this->Mat[i][j] = Mat1.Mat[i][j];
+        if(Mat1.MatOriginalRows != 0)
+        {
+            this->initMatOriginal(Mat1.MatOriginalRows, Mat1.MatOriginalCols);
+            for(int i = 0; i < this->MatOriginalRows; i++)
+                for (int j = 0; j < this->MatOriginalCols; j++)
+                   this->MatOriginal[i][j] = Mat1.MatOriginal[i][j];
+
+            this->initVet1(Mat1.vet1Rows, Mat1.vet1Cols);
+            for(int i = 0; i < this->vet1Rows; i++)
+                for (int j = 0; j < this->vet1Cols; j++)
+                   this->vet1[i][j] = Mat1.vet1[i][j];
+
+            this->initVet2(Mat1.vet2Rows, Mat1.vet2Cols);
+            for(int i = 0; i < this->vet2Rows; i++)
+                for (int j = 0; j < this->vet2Cols; j++)
+                    this->vet2[i][j] = Mat1.vet2[i][j];
+        }
     }
     else if((Mat1.vet1Rows == 0 || this->vet1Rows == 0) || (Mat1.vet2Cols == 0 || this->vet2Cols == 0))
     {
@@ -405,6 +422,7 @@ void Matrix::operator= (Matrix Mat1)//Operador de Igualdade entre Matrizes
     {
         if (this->vet1Cols == Mat1.vet1Cols && this->vet2Cols == Mat1.vet2Cols )
         {
+
             for(int i = 0; i < this->vet1Cols; i++)
                 for (int j = 0; j < this->vet2Cols; j++)
                 {
@@ -443,9 +461,6 @@ void Matrix::operator=(string value)//Operador para a entrada de uma String
 {
     this->init(value);
 }
-
-
-
 
 //-----Fim Operadores de Igualdade-----//
 
@@ -855,7 +870,7 @@ float min(Matrix M)
 Matrix Matrix::operator() (Matrix M1,Matrix M2)
 {
     float maxM1 = max(M1), maxM2 = max(M2), minM1 = min(M1), minM2 = min(M2);
-    Matrix Ret(maxM1, maxM2);
+    Matrix Ret;
     try
     {
         if (minM1 < 1 || minM2 < 1 || maxM1 > this->rows || maxM2 > this->cols)
@@ -868,10 +883,12 @@ Matrix Matrix::operator() (Matrix M1,Matrix M2)
             Ret.initMatOriginal(this->rows, this->cols);
             Ret.initVet1(M1.rows, M1.cols);
             Ret.initVet2(M2.rows, M2.cols);
-
+//            this->print();
             for(int i = 0; i < Ret.MatOriginalRows; i++)
                 for(int j = 0; j < Ret.MatOriginalCols; j++)
                     Ret.MatOriginal[i][j] = this->Mat[i][j];
+
+//            Ret.printMatOr();
 
             for(int i = 0; i < Ret.vet1Rows; i++)
                 for(int j = 0; j < Ret.vet1Cols; j++)
@@ -890,9 +907,19 @@ Matrix Matrix::operator() (Matrix M1,Matrix M2)
     return Ret;
 }
 
+Matrix Matrix::operator() (string S1,string S2)
+{
+    Matrix M1, M2, Ret;
 
-
-
+    M1 = S1;
+    M2 = S2;
+    Ret = this->operator ()(M1,M2);
+//    Ret.print();
+    Ret.Address = this;
+//    this->print();
+//    Ret.printMatOr();
+    return Ret;
+}
 
 void Matrix::lineVector(int left, int rigth)
 {
