@@ -15,6 +15,7 @@ using namespace std;
 class Matrix
 {
 private:
+<<<<<<< HEAD
 //    Matrix *Address;
 //    int rows, cols, MatOriginalRows, MatOriginalCols, vet1Rows, vet1Cols, vet2Rows, vet2Cols;
 //    float **Mat, **MatOriginal, **vet1, **vet2; //criei essa variável temprária para criar uma função que permita realizar a seguinte intrução A(vet1,vet2) = A(vet1,vet2)
@@ -25,6 +26,14 @@ private:
 //    void initVet1(int row, int col);
 //    void initVet2(int row, int col);
 
+=======
+    Matrix *Address;
+    int rows, cols, MatOriginalRows, MatOriginalCols, vet1Rows, vet1Cols, vet2Rows, vet2Cols;
+    float **Mat, **MatOriginal, **vet1, **vet2; //criei essa variável temprária para criar uma função que permita realizar a seguinte intrução A(vet1,vet2) = A(vet1,vet2)
+    void initMatOriginal(int row, int col);
+    void initVet1(int row, int col);
+    void initVet2(int row, int col);
+>>>>>>> 0d6cd6321f7f467d997ffb0a4725bd4fc6ed3ec3
     //#####Verificação de Matriz Quadrada#####//
     bool sqr(Matrix Mat1);
     //#######################################//
@@ -55,7 +64,11 @@ public:
 
     //#####Método de Impressão da Matriz#####//
     void print();
+<<<<<<< HEAD
 //    void printMatOr();
+=======
+    void printMatOr();
+>>>>>>> 0d6cd6321f7f467d997ffb0a4725bd4fc6ed3ec3
     //######################################//
 
     //#####Operadores da Matriz#####//
@@ -98,8 +111,13 @@ public:
     Matrix operator> (float num);//Eleva os elementos de uma matriz a um determinado
     float operator() (int row,int col);//Acessa os elementos de uma matriz
     void operator() (int row, int col, float value);
+<<<<<<< HEAD
 //    Matrix operator() (Matrix M1,Matrix M2);//Acessa n elementos de uma matriz
 //    Matrix operator() (string M1,string M2);//Acessa n elementos de uma matriz
+=======
+    Matrix operator() (Matrix M1,Matrix M2);//Acessa n elementos de uma matriz
+    Matrix operator() (string M1,string M2);//Acessa n elementos de uma matriz
+>>>>>>> 0d6cd6321f7f467d997ffb0a4725bd4fc6ed3ec3
     void lineVector(int left, int rigth);//Cria uma matriz elementos crescentes ou decrescentes de um em um de left até rigth
     //-----------------------------------------//
 
@@ -126,7 +144,10 @@ public:
 
     friend float max(Matrix M);//Retorna o maior valor de uma matriz
     friend float min(Matrix M);//Retorna o menor valor de uma matriz
+<<<<<<< HEAD
     friend float norm(Matrix M);//Retorna o maior valor de uma matriz
+=======
+>>>>>>> 0d6cd6321f7f467d997ffb0a4725bd4fc6ed3ec3
     friend Matrix abs(Matrix M);//Retorna o modulo dos valores de uma matriz
     friend Matrix cos(Matrix M1);//Retorna o cosseno dos elementos de uma matriz
     friend Matrix sin(Matrix M1);//Retorna o seno dos elementos de uma matriz
@@ -152,10 +173,13 @@ public:
 
 
     int length();//Retorna o maior tamanho entre as linhas e colunas
+<<<<<<< HEAD
 
     Matrix Avarage();
     Matrix Variance();
     Matrix Std();
+=======
+>>>>>>> 0d6cd6321f7f467d997ffb0a4725bd4fc6ed3ec3
 };
 
 #endif // MATRIX_H
