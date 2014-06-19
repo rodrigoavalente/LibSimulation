@@ -7,7 +7,7 @@
 class Lsim
 {
     private:
-        Matrix output, input, A, X, b, PeriodicTime;//Saídas,Entradas,Matriz montada a partir dos dados, coeficientes, Saída simulada
+        Matrix output, input, Phi, A, X, b, PeriodicTime;//Saídas,Entradas,Matriz montada a partir dos dados, coeficientes, Saída simulada
         string Model;
 
     public:
@@ -21,6 +21,8 @@ class Lsim
         void polyCoef(int grau);
     //Modelos ARX (Auto Recursive with eXogenous output)
         void arxModel(int ny, int nu);
+        void arxModelOneStep(int ny, int nu, int maxNuNy, int line);
+        Matrix simArxOneStep(int ny, int nu, Matrix ArxPar);
         void simArx(int ny, int nu);
         void arxCoef(int ny, int nu);
     //Modelos de equações diferenciais

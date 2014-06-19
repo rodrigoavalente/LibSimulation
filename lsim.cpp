@@ -70,6 +70,47 @@ void Lsim::arxModel(int ny, int nu)
 
 }
 
+void Lsim::arxModelOneStep(int ny, int nu, int maxNuNy, int line)
+{
+
+    this->Model = "ARX";
+
+    for(int j = 0; j < nu+ny; j++)
+    {
+        if(j<ny)
+            this->Phi.add(1,j+1,-this->b.getMat(line-ny+j+1, 1));
+        else
+            this->Phi.add(1,j+1,this->input.getMat( line-nu-ny+j+1, 1));
+    }
+
+}
+
+Matrix Lsim::simArxOneStep(int ny, int nu, Matrix ArxPar)
+{
+//    double TempOutput;
+    int maxNuNy,minRowInOut;
+    this->b = this->output;
+
+
+    if(ny>nu)
+        maxNuNy = ny;
+    else
+        maxNuNy = nu;
+
+    if(this->output.getRows() > this->input.getRows())
+        minRowInOut = this->input.getRows();
+    else
+        minRowInOut = this->output.getRows();
+
+    for(int i = maxNuNy; i < minRowInOut; i++)
+    {
+        arxModelOneStep(ny, nu, maxNuNy, i);
+        this->b.add(i+1, 1, (this->Phi*~ArxPar)(1,1));
+    }
+
+    return this->b;
+
+}
 
 void Lsim::simArx(int ny, int nu)
 {
